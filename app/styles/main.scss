@@ -1,0 +1,84 @@
+@import "compass/css3";
+@import "compass/css3/user-interface";
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 10px;
+}
+
+.container {
+    margin: 10px;
+}
+
+body {
+    background: white;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #333;
+}
+
+.footnote {
+    font-size: smaller;
+}
+
+.vis-holder {
+    width: 100%;
+    overflow: hidden;
+    @include user-select(none);
+}
+
+.resolution-vis {
+    position: relative; //.resolution-card's will have absolute positioning
+    // outline: 1px dashed #e2e2e2; //debug
+}
+
+
+.res-divider {
+    display: inline;
+    &.multiline {
+        display: block;
+    }
+}
+
+.resolution-card {
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 5px 2px;
+    text-align: center;
+    font-size: 13px;
+    background-color: scale-lightness( #8be234, 0.2 );
+    border: 1px solid #408000;
+    @include border-radius(3px);
+    // @include box-shadow( rgba(200, 200, 200, 0.5) 3px 3px 2px );
+    @include transition( left 150ms ease );
+    // @include transition( margin-top 50ms 200ms ease );
+
+    .device-names {
+        display: none;
+        font-size: 10px;
+        line-height: 1.4em;
+    }
+
+    &:hover {
+        // border: 1px solid #408000;
+        background-color: #66cc00;
+    }
+
+    &.selected {
+        background-color: #66cc00;
+        border: 1px solid #408000;
+        // margin-top: -20px;
+        .device-names {
+            display: block;
+            @include user-select(text);
+        }
+    }
+
+
+
+}

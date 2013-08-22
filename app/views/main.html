@@ -1,0 +1,37 @@
+<h1>Top {{ countDevices() }} Mobile Devices</h1>
+
+<div class="vis-holder">
+  <telus-resolution-vis />
+</div>
+
+<h2>Stats for July 2013</h2>
+<ul>
+  <li>
+    <strong>20%</strong> of page views on <a href="http://telusmobility.com" target="_blank">telusmobility.com</a> were from mobile devices.
+    <ul>
+      <li>This is up from 14% in 2012, and 8% in 2011.</li>
+      <li>Assuming a steady increase of 6% each year, could this mean that mobile devices will account for half of the traffic by 2018 or sooner?</li>
+    </ul>
+  </li>
+  <li><strong>1,532 <em>unique</em></strong> device models accounted for these <strong>8 million</strong> page views.
+    <ul>
+      <li>Only <strong>99</strong> device models generated <strong>97.5%</strong> of the views.</li>
+      <li>A very loooong tail of <strong>1433</strong> devices account for the rest.</li>
+    </ul>
+  </li>
+  <li>
+    In the top 100, there were <strong>XX</strong> unique screen resolutions:
+    <ul>
+      <li>Widths ranged from: <strong>{{ getMinWidth() }}px to {{ getMaxWidth() }}px</strong></li>
+      <li>Heights ranged from: <strong>{{ getMinHeight() }}px to {{ getMaxHeight() }}px</strong></li>
+      <li>Smallest resolution device: </li>
+      <li>Largest resolution device: </li>
+    </ul>
+  </li>
+</ul>
+
+
+<!-- <h1>Devices</h1> -->
+<!-- <ul>
+  <li ng-repeat="device in mobileDevices">{{device.deviceName}}, {{device.pxWidth}}, {{device.pxHeight}}, {{ device.os }} {{ device.osVersion }}, {{ device.releaseDate | date:'medium' }}</li>
+</ul> -->
