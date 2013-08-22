@@ -11,6 +11,49 @@ angular.module('infographicApp')
       scope: true,
       controller: function( $scope ) {
 
+        // these 3 properties rely on $scope.mobileDevices being loaded from json
+        $scope.maxHeight = 0; // = $scope.$parent.getMaxHeight();
+        $scope.maxWidth = 0;  // = $scope.$parent.getMaxWidth();
+        $scope.numSizes = 0;  // = scope.$parent.countDevices();
+
+        // layout
+        $scope.dimensionScale = 0.2;
+        $scope.cardOffset = 10;
+        $scope.selectedCard;
+
+        $scope.getScaledUnit = function( pixels ) {
+          return Math.round( pixels * $scope.dimensionScale ) + 'px';
+        }
+
+        $scope.getScaledTopPosition = function( height ) {
+          return $scope.getScaledUnit( $scope.maxHeight - height );
+        };
+
+        $scope.getLeftPosition = function( index ) {
+          return ( $scope.numSizes *  $scope.cardOffset ) - ( index * $scope.cardOffset );
+        };
+
+        $scope.setContainerWidth = function( element, width ) {
+          element.css( 'width', width );
+        }
+
+        $scope.resetAllCardLeftPositions = function() {
+          $('.resolution-card').each(function( i, card ){
+            $(card).css( 'left', $scope.getLeftPosition( card.getAttribute('deviceIndex') ) );
+          });
+        }
+
+        $scope.resetSelectedCard = function( newCard ) {
+          if ( $scope.selectedCard ) {
+            $( $scope.selectedCard ).removeClass("selected");
+            $scope.resetAllCardLeftPositions();
+          }
+          $scope.selectedCard = newCard;
+          $(newCard).addClass("selected");
+        }
+
+        /*
+
         // $scope.colors = [ '#A600A6', '#7C1F7C', '#6C006C', '#D235D2', '#D25FD2' ];
         $scope.colors = [ '#E599E5', '#AC81AC', '#953295', '#F2B6F2', '#F2C6F2' ];
 
@@ -22,80 +65,19 @@ angular.module('infographicApp')
         //TODO: fix up
         $scope.getGroupedColor = function(index) {
           var index = index || 0;
-          var percent = Math.round( index / $scope.mobileDevices.length * 10 );
+          var percent = Math.round( index / $scope.countDevices() * 10 );
           var i = Math.round( $scope.colors.length * percent );
           // console.log ( percent, i, $scope.colors[i] );
           // return $scope.colors[i];
           return "white";
         }
 
+        */
+
       },
       link: function ( scope, element, attrs ) {
             
-        scope.maxHeight = scope.$parent.getMaxHeight();
-        scope.maxWidth = scope.$parent.getMaxWidth();
-        scope.dimensionScale = 0.2;
-        scope.cardOffset = 10;
-        scope.numSizes = scope.$parent.mobileDevices.length; //!should be the grouped number of sizes
-        scope.click = {};
-
-        scope.getScaledUnit = function( pixels ) {
-          return Math.round( pixels * scope.dimensionScale ) + 'px';
-        }
-
-        scope.getScaledTopPosition = function( height ) {
-          return scope.getScaledUnit( scope.maxHeight - height );
-        };
-
-        scope.getLeftPosition = function( index ) {
-          return ( scope.numSizes *  scope.cardOffset ) - ( index * scope.cardOffset );
-        };
-
-        scope.setContainerWidth = function( width ) {
-          element.css( 'width', width );
-        }
-
-        scope.revealSelectedCard = function( card ) {
-          var deviceName = card.deviceAlias || card.deviceName;
-          console.log( 'container: ', deviceName );
-        }
-
-        scope.resetAllCardLeftPositions = function() {
-          $('.resolution-card').each(function( i, card ){
-            $(card).css( 'left', scope.getLeftPosition( card.getAttribute('deviceIndex') ) );
-          });
-        }
-      
-        // scope.setClickCallback = function( callback ) {
-        //   console.log( callback );
-        //   scope.click = callback; 
-        // }
-
-        // scope.fun = function(index){
-        //     console.log('hi from controller', index );      
-        // };
-
-        scope.clicked;
-        
-        // update dom
-
-        element.css( {  height: scope.getScaledUnit( scope.maxHeight ) } );
-
-        // update the width after all ng-repeat is done
-        // TODO: this only works after the FIRST one, not the last, so using scope.$first in the child directive
-        // scope.$watch('resolutionVis', function(newValue, oldValue, scope) {
-        // });
-
-        scope.selectedCard;
-
-        scope.resetSelected = function( newCard ) {
-          if ( scope.selectedCard ) {
-            $( scope.selectedCard ).removeClass("selected");
-            scope.resetAllCardLeftPositions();
-          }
-          scope.selectedCard = newCard;
-          $(newCard).addClass("selected");
-        }
+        //TODO: make the position of the selected card to be underneath the mouse cursor.
 
         element.on('click', function(event){
 
@@ -108,15 +90,21 @@ angular.module('infographicApp')
           }
 
           // reset all the other card positions
-          scope.resetSelected(selectedCard);
+          scope.resetSelectedCard(selectedCard);
 
           // no need to create a jQuery object to get the attribute 
           // var deviceIndex = selectedCard.getAttribute('deviceIndex');        
           // console.log( "deviceIndex: " , deviceIndex );
 
+          scope.positionCardsToLeft = function() {
+
+          }
+
+
           // move selected card
           var prevCard = $(selectedCard).next(selectedCard)[0]; // previous card is actually the NEXT one in the DOM tree
           if ( prevCard ) {
+
             var prevCardOffsetLeft = scope.getLeftPosition( prevCard.getAttribute('deviceIndex') )
             var shiftLeft = prevCardOffsetLeft + prevCard.offsetWidth + scope.cardOffset;
             $(selectedCard).css('left', shiftLeft );
@@ -133,6 +121,7 @@ angular.module('infographicApp')
 
         });
 
+
         $(document).on('keydown', function(event){
 
           if ( scope.selectedCard ) {
@@ -147,12 +136,22 @@ angular.module('infographicApp')
               card = $(scope.selectedCard).prev(scope.selectedCard)[0];
             }
             if ( card ) {
-              scope.resetSelected( card );
+              scope.resetSelectedCard( card );
               $(card).click();
             }
           }
 
         });
+
+        scope.$watch('mobileDevices', function(){
+          console.log( "mobileDevices changed" );
+          scope.maxHeight = scope.$parent.getMaxHeight();
+          scope.maxWidth = scope.$parent.getMaxWidth();
+          scope.numSizes = scope.$parent.mobileDevices.length;
+
+          // update dom
+          element.css( {  height: scope.getScaledUnit( scope.maxHeight ) } );
+        }, true);
 
       }
     };
@@ -173,20 +172,12 @@ angular.module('infographicApp')
                 '  <div class="device-names">{{getDeviceName()}}</div>' + 
                 '</div>',
       // scope: { device: '=device' },
-       scope: true,
+      scope: true,
       controller: function( $scope, $element, $attrs ) {
 
         $scope.getDeviceName = function() {
           return $scope.device.deviceAlias || $scope.device.deviceName;
         };
-
-        // $scope.showDeviceModel = function( ) {
-        //   console.log( 'card: ', $scope.getDeviceName() );
-        //   // event.stopPropagation();
-        //   // $scope.$parent.revealSelectedCard( $scope.device );
-        // }
-
-
 
       },
       link: function ( scope, element, attrs ) {
@@ -194,8 +185,6 @@ angular.module('infographicApp')
         if ( scope.device.pxWidth === 0 && scope.device.pxHeight === 0 ) {
           return;
         }
-
-
 
         // put this in so dom update only fires once
         // TODO: look into why??
@@ -213,8 +202,11 @@ angular.module('infographicApp')
             element.find('.res-divider').addClass("multiline");
           }
 
-        });
+          if ( !scope.device.isPhone ) {
+            element.addClass("tablet");
+          }
 
+        });
 
         // TODO: what's the best way to use ng-class in a directive that uses ng-repeat?
         // usage in template property: ng-class="{multiline: isMultiline()}"
@@ -227,14 +219,13 @@ angular.module('infographicApp')
         //   // return true;
         // };
 
-
         // events
         // element.on( 'click', scope.showDeviceModel );
 
         if (scope.$first){
           var firstCard = $(element)[0],
               containerWidth = ( firstCard.offsetLeft + firstCard.offsetWidth ) + 'px';
-          scope.$parent.setContainerWidth( containerWidth );
+          scope.$parent.setContainerWidth( element, containerWidth );
         }
 
       }

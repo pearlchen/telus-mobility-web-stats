@@ -43,6 +43,10 @@ body {
     }
 }
 
+fieldset {
+    border: none;
+}
+
 .resolution-card {
     cursor: pointer;
     position: absolute;
@@ -64,14 +68,17 @@ body {
         line-height: 1.4em;
     }
 
+    &.tablet {
+        border: 1px solid red;
+    }
+
     &:hover {
-        // border: 1px solid #408000;
         background-color: #66cc00;
     }
 
     &.selected {
         background-color: #66cc00;
-        border: 1px solid #408000;
+        // border: 1px solid #408000;
         // margin-top: -20px;
         .device-names {
             display: block;

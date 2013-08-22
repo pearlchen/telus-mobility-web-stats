@@ -4,6 +4,11 @@
   <telus-resolution-vis />
 </div>
 
+<fieldset>
+  <input type="radio" ng-model="displayGrouped" ng-value="false" ng-change="updateVis()" /><label for="all">Show all devices</label>
+  <input type="radio" ng-model="displayGrouped" ng-value="true" ng-change="updateVis()" /><label for="grouped">Group devices by resolution</label>
+</fieldset>
+
 <h2>Stats for July 2013</h2>
 <ul>
   <li>
