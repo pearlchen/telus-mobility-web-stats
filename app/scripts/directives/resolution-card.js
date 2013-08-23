@@ -128,13 +128,19 @@ angular.module('infographicApp')
             var card; 
             if ( event.which === 37 ) { // left arrow key
               card = $(scope.selectedCard).next(scope.selectedCard)[0];
-            }else if ( event.which ===  39 ) {
-              // right arrow key
+            }else if ( event.which ===  39 ) { // right arrow key
               card = $(scope.selectedCard).prev(scope.selectedCard)[0];
             }
             if ( card ) {
+              // Note: oldCard and cursor:none/pointer stuff is because 
+              // mouseleave/mouseout are not triggered once you start using the keyboard.
+              // Otherwise, old card stays :hover highlighted despite it not being selected anymore
+              // TODO: can/should I disable all rollovers when using only the keyboard?
+              var oldCard = $(scope.selectedCard);
+              oldCard.css({cursor:'none'});
               scope.resetSelectedCard( card );
-              $(card).click();
+              $(card).trigger('click');
+              oldCard.css({cursor:'pointer'});
             }
           }
 
