@@ -12,8 +12,7 @@ angular.module('infographicApp')
       controller: function( $scope ) {
 
         // these 3 properties rely on $scope.mobileDevices being loaded from json
-        $scope.maxHeight = 0; // = $scope.$parent.getMaxHeight();
-        $scope.maxWidth = 0;  // = $scope.$parent.getMaxWidth();
+        $scope.maxHeight = 0; // = scope.$parent.getDeviceProperty('pxHeight','max');
         $scope.numSizes = 0;  // = scope.$parent.countDevices();
 
         // layout
@@ -125,11 +124,9 @@ angular.module('infographicApp')
         $(document).on('keydown', function(event){
 
           if ( scope.selectedCard ) {
-            // TODO: can I disable rollovers?
 
             var card; 
-            if ( event.which === 37 ) {
-              // left arrow key
+            if ( event.which === 37 ) { // left arrow key
               card = $(scope.selectedCard).next(scope.selectedCard)[0];
             }else if ( event.which ===  39 ) {
               // right arrow key
@@ -144,14 +141,15 @@ angular.module('infographicApp')
         });
 
         scope.$watch('mobileDevices', function(){
-          console.log( "mobileDevices changed" );
-          scope.maxHeight = scope.$parent.getMaxHeight();
-          scope.maxWidth = scope.$parent.getMaxWidth();
-          scope.numSizes = scope.$parent.mobileDevices.length;
+
+          // update variables for positioning
+          scope.maxHeight = scope.$parent.getDeviceProperty('pxHeight','max');
+          scope.numSizes = scope.$parent.countDevices();
 
           // update dom
           element.css( {  height: scope.getScaledUnit( scope.maxHeight ) } );
-        }, true);
+
+        });
 
       }
     };

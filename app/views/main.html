@@ -1,4 +1,4 @@
-<h1>Top {{ countDevices() }} Mobile Devices</h1>
+<h1>Top {{ mobileDevices.length }} Mobile Devices</h1>
 
 <div class="vis-holder">
   <telus-resolution-vis />
@@ -25,12 +25,12 @@
     </ul>
   </li>
   <li>
-    In the top 100, there were <strong>XX</strong> unique screen resolutions:
+    In the top 100, there were <strong>{{mobileDevicesGroupedLength}}</strong> unique screen resolutions:
     <ul>
-      <li>Widths ranged from: <strong>{{ getMinWidth() }}px to {{ getMaxWidth() }}px</strong></li>
-      <li>Heights ranged from: <strong>{{ getMinHeight() }}px to {{ getMaxHeight() }}px</strong></li>
-      <li>Smallest resolution device: </li>
-      <li>Largest resolution device: </li>
+      <!-- <li>Widths ranged from: <strong>{{getDeviceProperty('pxWidth','min')}}px to {{getDeviceProperty('pxWidth','max')}}px</strong></li>
+      <li>Heights ranged from: <strong>{{getDeviceProperty('pxHeight','min')}}px to {{getDeviceProperty('pxHeight','max')}}px</strong></li> -->
+      <li>Smallest resolution device(s): <strong>{{smallestResolutionDevices[0].pxWidth}}px by {{smallestResolutionDevices[0].pxHeight}}px</strong> ({{getDeviceNamesinArray('smallestResolutionDevices')}})</li>
+      <li>Largest resolution device(s): <strong>{{highestResolutionDevices[0].pxWidth}}px by {{highestResolutionDevices[0].pxHeight}}px</strong> ({{getDeviceNamesinArray('highestResolutionDevices')}})</li>
     </ul>
   </li>
 </ul>

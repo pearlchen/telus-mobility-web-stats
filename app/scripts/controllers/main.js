@@ -5,29 +5,57 @@ angular.module('infographicApp')
 
     $scope.displayGrouped = false;
     $scope.mobileDevices = [];
+    $scope.mobileDevicesGrouped = [];
+    $scope.mobileDevicesGroupedLength = 0; // store length since associative array gets confused with how long it actually is
+    $scope.smallestResolutionDevice = {};
+    $scope.highestResolutionDevice = {};
 
     $http.get('/data/mobileDevices.json')
        .then(function(res){
+
           $scope.mobileDevices = res.data;
-          console.log( $scope.mobileDevices.length );
-          // $scope.mobileDevices.length = 10; //for debugging only
-          $scope.sortByWidth(); //default              
+
+          // sanity check:
+          // console.log( "json length: ", $scope.mobileDevices.length );
+          // $scope.mobileDevices.length = 10; // truncate array for debugging only to work with a smaller dataset
+
+          // get rid of devices that that are 0 x 0
+          $scope.mobileDevices = _.filter($scope.mobileDevices, function(device){
+            return device.pxWidth !== 0 && device.pxHeight !== 0;
+          });
+
+          // sort arrays in two ways
+          $scope.sortByWidth();  
+          $scope.groupDevicesBySize();  
+
         });
 
     $scope.updateVis = function() {
       if ( $scope.displayGrouped ) {
-        $scope.groupDevicesBySize();
+        $scope.showDevicesAsGroup();
       }else{
         $scope.showAllDevices();
       }
     }
 
+    $scope.showDevicesAsGroup = function() {
+      console.log( ">>> showDevicesAsGroup" );
+    };
+
     $scope.showAllDevices = function(){
       console.log( ">>> showAllDevices" );
     };
 
-    $scope.countDevices = function() {
-      return $scope.mobileDevices.length;
+    $scope.countDevices = function( useGroupedTotal ) {
+      
+      var useGroupedTotal = useGroupedTotal || $scope.displayGrouped;
+
+      if ( useGroupedTotal ) {
+        return $scope.mobileDevicesGroupedLength;
+      }else{
+        return $scope.mobileDevices.length;
+      }
+
     };
 
     $scope.sortByWidth = function() {
@@ -42,76 +70,90 @@ angular.module('infographicApp')
       });
     }
 
-    // get rid of devices that that are 0 x 0
-    $scope.mobileDevices = _.filter($scope.mobileDevices, function(device){
-      return device.pxWidth !== 0 && device.pxHeight !== 0;
-    });
-
-    $scope.getMaxHeight = function() {
-      var device = _.max( $scope.mobileDevices, function(device){
-        return device.pxHeight;
-      });
-      return device.pxHeight;
-    };
-
-    $scope.getMaxWidth = function() {
-      var device = _.max( $scope.mobileDevices, function(device){
-        return device.pxWidth;
-      });
-      return device.pxWidth;
-    };
-
-    $scope.getMinHeight = function() {
-      var device = _.min( $scope.mobileDevices, function(device){
-        return device.pxHeight;
-      });
-      return device.pxHeight;
-    };
-
-    $scope.getMinWidth = function() {
-      var device = _.min( $scope.mobileDevices, function(device){
-        return device.pxWidth;
-      });
-      return device.pxWidth;
-    };
-
-    $scope.parseDate = function() {
-      var date = new Date( Date.parse( 'Sept 1, 2010' ) );
-      console.log(date);
-    };
-
-    $scope.groupDeviceModels = function() {
-      var groupedMobileDevices = _.groupBy( $scope.mobileDevices, function(device) {
-        return device.deviceAlias || device.deviceName;
-      });
-      // console.log( groupedMobileDevices );
-    };
-
     $scope.groupDevicesBySize = function() {
 
-      console.log( ">>> groupDevicesBySize" );
+      if ( $scope.mobileDevicesGrouped.length > 0 ) {
+        return; // already been parsed so reuse
+      }
+
+      // create a 2D array to store devices, 
+      // e.g. $scope.mobileDevicesGrouped[1280][800] for a device with a width of 1280 and a height of 800
 
       var groupedByWidth = [],
-          groupedByHeight = [],
-          width;
+          width,
+          height;
+
+      $scope.mobileDevicesGroupedLength = 0;
+      $scope.smallestResolutionDevice = null;
+      $scope.highestResolutionDevice = null;
 
       groupedByWidth = _.groupBy( $scope.mobileDevices, function(device) {
         return device.pxWidth;
       });
 
-      console.log( "groupedByWidth: " , groupedByWidth );
-      
       for ( width in groupedByWidth ) {
-        groupedByHeight[ width ] = [];
-        var array = groupedByWidth[ width ];
-        // console.log( array );
-        groupedByHeight[ width ].push( _.groupBy( array, function(device) {
+
+        var groupedByHeight = _.groupBy( groupedByWidth[width], function(device) {
           return device.pxHeight;
-        }) );
+        });
+
+        $scope.mobileDevicesGrouped[width] = [];
+
+        for ( height in groupedByHeight ) {
+          if ( $scope.mobileDevicesGrouped[width][height] === undefined ) {
+            $scope.mobileDevicesGrouped[width][height] = [];
+            $scope.mobileDevicesGroupedLength++;
+            if ( !$scope.smallestResolutionDevices ) {
+              $scope.smallestResolutionDevices = groupedByHeight[height];
+            }
+          }
+          $scope.mobileDevicesGrouped[width][height] = groupedByHeight[height];
+        }
+
+        $scope.highestResolutionDevices = groupedByHeight[height];
+
       }
-      
-      console.log( "groupedByHeight[ "+width+" ]: ", groupedByHeight[ width ] );
+
+      // sanity check
+      console.log( "mobileDevicesGroupedLength: ", $scope.mobileDevicesGroupedLength );
+      console.log( "mobileDevicesGrouped: ", $scope.mobileDevicesGrouped );
+      console.log( "[320][480]: ", $scope.mobileDevicesGrouped[320][480] );
+      console.log( "[1024][600]: ", $scope.mobileDevicesGrouped[1024][600] );
 
     };
+
+    $scope.getDeviceProperty = function( property, sortMethod ) {
+
+      var property = property || '',
+          sortMethod = sortMethod || 'min';
+
+      if ( _[sortMethod] === undefined ) {
+        return undefined;
+      }
+
+      var device = _[sortMethod].call( $scope, $scope.mobileDevices, function(device){
+        return device[property];
+      });
+
+      return device[property];
+
+    }
+
+    $scope.getDeviceNamesinArray = function( array ) {
+      var names = _.pluck( $scope[array], 'deviceName' ).toString();
+      return names;
+    }
+
+    // $scope.parseDate = function(date) {
+    //   var date = new Date( Date.parse( date ) );
+    //   console.log(date);
+    // };
+
+    // $scope.groupDeviceModels = function() {
+    //   var groupedMobileDevices = _.groupBy( $scope.mobileDevices, function(device) {
+    //     return device.deviceAlias || device.deviceName;
+    //   });
+    //   // console.log( groupedMobileDevices );
+    // };
 
   });
