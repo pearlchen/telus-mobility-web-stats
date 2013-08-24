@@ -62,10 +62,15 @@ fieldset {
     @include transition( left 150ms ease );
     // @include transition( margin-top 50ms 200ms ease );
 
+    .resolution-title {
+        pointer-events: none;
+    }
+    
     .device-names {
         display: none;
         font-size: 10px;
         line-height: 1.4em;
+        pointer-events: none;
     }
 
     &.tablet {

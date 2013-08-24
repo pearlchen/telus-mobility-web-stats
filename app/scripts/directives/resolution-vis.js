@@ -85,6 +85,8 @@ angular.module('infographicApp')
         // scope versus test testing...
         // console.log( "parent link: ", controller, controller.test );
 
+        // TODO: either move this event back into the card IF pointer-events: none; is not cross platform enough
+
         element.on('click', function(event){
 
           // store event target
