@@ -5,62 +5,69 @@ angular.module('infographicApp')
 
     $scope.displayGrouped = false;
     $scope.mobileDevices = [];
+    $scope.mobileDevicesAll = [];
     $scope.mobileDevicesGrouped = [];
     $scope.mobileDevicesGroupedLength = 0; // store length since associative array gets confused with how long it actually is
-    $scope.smallestResolutionDevice = {};
-    $scope.highestResolutionDevice = {};
+    $scope.mobileDevicesFlatGroup = [];
+    $scope.smallestResolutionDevices = {};
+    $scope.highestResolutionDevices = {};
+    $scope.mostCommonResolutionDevices = {};
+
 
     $http.get('/data/mobileDevices.json')
        .then(function(res){
 
-          $scope.mobileDevices = res.data;
+          $scope.mobileDevicesAll = res.data;
 
           // sanity check:
-          // console.log( "json length: ", $scope.mobileDevices.length );
-          // $scope.mobileDevices.length = 10; // truncate array for debugging only to work with a smaller dataset
+          console.log( "json length: ", $scope.mobileDevicesAll.length );
+          // $scope.mobileDevicesAll.length = 10; // truncate array for debugging only to work with a smaller dataset
 
           // get rid of devices that that are 0 x 0
-          $scope.mobileDevices = _.filter($scope.mobileDevices, function(device){
+          $scope.mobileDevicesAll = _.filter($scope.mobileDevicesAll, function(device){
             return device.pxWidth !== 0 && device.pxHeight !== 0;
           });
 
           // sort arrays in two ways
-          $scope.sortByWidth();  
+          $scope.sortByWidth( $scope.mobileDevicesAll );  
           $scope.groupDevicesBySize();  
+          // $scope.sortByWidth( $scope.mobileDevicesFlatGroup );  
+
+          console.log( "$scope.mobileDevicesAll: ", $scope.mobileDevicesAll  );
+          $scope.updateVis();
 
         });
 
     $scope.updateVis = function() {
       if ( $scope.displayGrouped ) {
-        $scope.showDevicesAsGroup();
+        // $scope.mobileDevices = $scope.mobileDevicesGroup;
+        $scope.mobileDevices = $scope.mobileDevicesFlatGroup;
+        // console.log( "updateVis: ", $scope.mobileDevices );
       }else{
-        $scope.showAllDevices();
+        $scope.mobileDevices = $scope.mobileDevicesAll;
       }
+      // $scope.countDevices(); //debug only
     }
-
-    $scope.showDevicesAsGroup = function() {
-      console.log( ">>> showDevicesAsGroup" );
-    };
-
-    $scope.showAllDevices = function(){
-      console.log( ">>> showAllDevices" );
-    };
 
     $scope.countDevices = function( useGroupedTotal ) {
       
       var useGroupedTotal = useGroupedTotal || $scope.displayGrouped;
 
       if ( useGroupedTotal ) {
-        return $scope.mobileDevicesGroupedLength;
+        // console.log( "countDevices() scope.mobileDevicesGroupedLength: ", $scope.mobileDevicesGroupedLength );
+        // return $scope.mobileDevicesGroupedLength;
+        // console.log( "countDevices() $scope.mobileDevicesFlatGroup.length: ", $scope.mobileDevicesFlatGroup.length );
+        return $scope.mobileDevicesFlatGroup.length;
       }else{
-        return $scope.mobileDevices.length;
+        // console.log( "countDevices() $scope.mobileDevicesAll.length: ", $scope.mobileDevicesAll.length );
+        return $scope.mobileDevicesAll.length;
       }
 
     };
 
-    $scope.sortByWidth = function() {
+    $scope.sortByWidth = function( array ) {
       // sort by width, descending in size so bigger sizes show up in the "back"
-      $scope.mobileDevices.sort(function(a,b){
+      array.sort(function(a,b){
         if (a.pxWidth > b.pxWidth)
           return -1;
         if (a.pxWidth < b.pxWidth)
@@ -83,11 +90,13 @@ angular.module('infographicApp')
           width,
           height;
 
+      $scope.mobileDevicesFlatGroup = [];
       $scope.mobileDevicesGroupedLength = 0;
-      $scope.smallestResolutionDevice = null;
-      $scope.highestResolutionDevice = null;
+      $scope.smallestResolutionDevices = null;
+      $scope.highestResolutionDevices = null;
+      $scope.mostCommonResolutionDevices = null;
 
-      groupedByWidth = _.groupBy( $scope.mobileDevices, function(device) {
+      groupedByWidth = _.groupBy( $scope.mobileDevicesAll, function(device) {
         return device.pxWidth;
       });
 
@@ -97,26 +106,50 @@ angular.module('infographicApp')
           return device.pxHeight;
         });
 
+
         $scope.mobileDevicesGrouped[width] = [];
 
         for ( height in groupedByHeight ) {
+          
+
           if ( $scope.mobileDevicesGrouped[width][height] === undefined ) {
+            
+            
             $scope.mobileDevicesGrouped[width][height] = [];
             $scope.mobileDevicesGroupedLength++;
             if ( !$scope.smallestResolutionDevices ) {
               $scope.smallestResolutionDevices = groupedByHeight[height];
             }
+
+            var names = _.pluck( groupedByHeight[height], 'deviceName' );
+            // console.log( "names for ["+width+"]["+height+"]", names );
+
+            $scope.mobileDevicesFlatGroup.push( {
+                "deviceName": names.join(", "),
+                "pxWidth": parseInt( width, 10 ),
+                "pxHeight": parseInt( height, 10 ),
+                "count": names.length,
+                "isPhone": true //remove
+              });
+
           }
+
+          // $scope.mobileDevicesFlatGroup[ $scope.mobileDevicesFlatGroup.length - 1 ].deviceName += groupedByHeight[height][0].deviceName;
           $scope.mobileDevicesGrouped[width][height] = groupedByHeight[height];
+
         }
 
         $scope.highestResolutionDevices = groupedByHeight[height];
 
       }
 
+      $scope.sortByWidth( $scope.mobileDevicesFlatGroup );  
+
+
       // sanity check
       console.log( "mobileDevicesGroupedLength: ", $scope.mobileDevicesGroupedLength );
       console.log( "mobileDevicesGrouped: ", $scope.mobileDevicesGrouped );
+      console.log( "mobileDevicesFlatGroup: ", $scope.mobileDevicesFlatGroup );
       console.log( "[320][480]: ", $scope.mobileDevicesGrouped[320][480] );
       console.log( "[1024][600]: ", $scope.mobileDevicesGrouped[1024][600] );
 
@@ -131,7 +164,7 @@ angular.module('infographicApp')
         return undefined;
       }
 
-      var device = _[sortMethod].call( $scope, $scope.mobileDevices, function(device){
+      var device = _[sortMethod].call( $scope, $scope.mobileDevicesAll, function(device){
         return device[property];
       });
 
@@ -150,7 +183,7 @@ angular.module('infographicApp')
     // };
 
     // $scope.groupDeviceModels = function() {
-    //   var groupedMobileDevices = _.groupBy( $scope.mobileDevices, function(device) {
+    //   var groupedMobileDevices = _.groupBy( $scope.mobileDevicesAll, function(device) {
     //     return device.deviceAlias || device.deviceName;
     //   });
     //   // console.log( groupedMobileDevices );
