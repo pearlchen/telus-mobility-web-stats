@@ -17,7 +17,7 @@ angular.module('infographicApp')
       require:'^telusResolutionVis',
       scope: { 
         device: '=', 
-        order: '=' 
+        order: '='
       },
       controller: function( $scope, $element, $attrs ) {
 
@@ -35,17 +35,35 @@ angular.module('infographicApp')
           return;
         }
 
+        var numDevices = scope.$parent.countDevices();
+        
         // put this in so dom update only fires once
         // TODO: look into why??
         scope.$watch('', function() {
 
-          // update dom
-          element.css( {  width:  scope.$parent.getScaledUnit(scope.device.pxWidth),
-                          height: scope.$parent.getScaledUnit(scope.device.pxHeight),
-                          top:    scope.$parent.getScaledTopPosition(scope.device.pxHeight),
-                          left:   scope.$parent.getLeftPosition(scope.order)
+          var defaultTop = scope.$parent.getVisHeight(),
+              top = scope.$parent.getTopPositionForCard(scope.device.pxHeight),
+              width = scope.$parent.getScaledUnit(scope.device.pxWidth),
+              height = scope.$parent.getScaledUnit(scope.device.pxHeight),
+              left = scope.$parent.getLeftPositionForCard(scope.order);
+
+          // update css for each card
+          element.css( {  width:  width + 'px',
+                          height: height + 'px',
+                          left:   left + 'px',
+                          top:    defaultTop + 'px', //offscreen to start, animate in in setTimeout()
+                          opacity: 0
                         } );
-  
+
+          // animation for css
+          setTimeout( function(){
+            element.css( {
+              top: top + 'px',
+              opacity: 1
+            })
+          }, (numDevices-scope.order) * 30 );
+          
+
           var title = element.children();
           if ( title.height() > 15 ) {
             element.find('.res-divider').addClass("multiline");
@@ -57,25 +75,8 @@ angular.module('infographicApp')
 
         });
 
-        // TODO: what's the best way to use ng-class in a directive that uses ng-repeat?
-        // usage in template property: ng-class="{multiline: isMultiline()}"
-        // scope.isMultiline = function() {
-        //   // check if title is breaking over two lines already
-        //   var title = element.children();
-        //   var multiline = ( title.height() >= 15 ? true : false );
-        //   console.log( title.height(), multiline );
-        //   return multiline;
-        //   // return true;
-        // };
-
         // events
         // element.on( 'click', scope.showDeviceModel );
-
-        if (scope.$first){
-          var firstCard = $(element)[0],
-              containerWidth = ( firstCard.offsetLeft + firstCard.offsetWidth ) + 'px';
-          scope.$parent.setContainerWidth( element, containerWidth );
-        }
 
       }
     };

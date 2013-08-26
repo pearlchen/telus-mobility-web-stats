@@ -123,14 +123,19 @@ angular.module('infographicApp')
 
             var names = _.pluck( groupedByHeight[height], 'deviceName' );
             // console.log( "names for ["+width+"]["+height+"]", names );
+            
+            var deviceObj = { "deviceName": names.join(", "),
+                              "pxWidth": parseInt( width, 10 ),
+                              "pxHeight": parseInt( height, 10 ),
+                              "count": names.length,
+                              "isPhone": true //remove
+                            };
+            // TODO
+            // if ( names.length > ) {
+            //   mostCommonResolutionDevices = deviceObj;
+            // }
 
-            $scope.mobileDevicesFlatGroup.push( {
-                "deviceName": names.join(", "),
-                "pxWidth": parseInt( width, 10 ),
-                "pxHeight": parseInt( height, 10 ),
-                "count": names.length,
-                "isPhone": true //remove
-              });
+            $scope.mobileDevicesFlatGroup.push( deviceObj );
 
           }
 
