@@ -1,4 +1,5 @@
-@import "compass/css3";
+@import "compass/css3/";
+@import "compass/utilities";
 @import "compass/css3/user-interface";
 
 * {
@@ -33,6 +34,7 @@ html, body {
 }
 
 .resolution-card {
+
   cursor: pointer;
   position: absolute;
   top: 10px;
@@ -40,39 +42,62 @@ html, body {
   padding: 5px 10px;
   text-align: center;
   font-size: 13px;
-  background-color: scale-lightness(#8be234, 0.2);
-  border: 1px solid #408000;
+  color: darken(#f0f0f0, 35%);
+  background-color: #f0f0f0;
+  border: 1px solid darken(#f0f0f0, 25%);
   @include border-radius(3px);
   @include transition(left 150ms ease, top 500ms cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 100ms ease);
+  
   .resolution-title {
     pointer-events: none;
+    margin-bottom: 3px;
   }
+
   .res-divider {
     display: inline;
     &.multiline {
       display: block;
     }
   }
+
+  &:hover {
+    background-color: darken(#f0f0f0, 10%);
+  }
+
+  &.selected {
+    color: #333;
+    background-color: darken(#f0f0f0, 5%);
+    border: 1px solid lighten(#333, 20%);
+    .device-names {
+      display: block;
+      @include user-select(text);
+    }
+  }
+
   .device-names {
     display: none;
     font-size: 10px;
     line-height: 1.4em;
     pointer-events: none;
   }
-  &.tablet {
-    border: 1px solid red;
-  }
-  &:hover {
-    background-color: #66cc00;
-  }
-  &.selected {
-    background-color: #66cc00;
-    // border: 1px solid #408000;
-    .device-names {
-      display: block;
-      @include user-select(text);
-    }
-  }
+
+  // &.phone {
+  //   // green
+  //   color: #408000;
+  //   border: 1px solid #66cc00;
+  //   &:hover {
+  //     background-color: lighten( #66cc00, 20% );
+  //   }
+  // }
+  // &.tablet {
+  //   // purple
+  //   color: #49166d;
+  //   border: 1px solid #8c68a6;
+  //   &:hover {
+  //     background-color: lighten( #8c68a6, 20% );
+  //   }
+  // }
+  
 }
 
 .footnote {

@@ -69,7 +69,9 @@ angular.module('infographicApp')
             element.find('.res-divider').addClass("multiline");
           }
 
-          if ( !scope.device.isPhone ) {
+          if ( scope.device.isPhone ) {
+            element.addClass("phone");
+          }else{
             element.addClass("tablet");
           }
 
