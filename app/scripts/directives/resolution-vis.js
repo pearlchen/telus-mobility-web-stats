@@ -23,7 +23,10 @@ angular.module('infographicApp')
         $scope.cardTopMargin = 0;
 
         // card interactions
-        $scope.selectedCard;
+        $scope.selectedCard = [];
+        $scope.selectedOrder;
+        $scope.cardsDeactivated = false;
+        $scope.previousMouseEvent = null; //for getting x,y
 
         $scope.getScaledUnit = function( pixels ) {
           return Math.round( pixels * $scope.cardScale );
@@ -47,9 +50,21 @@ angular.module('infographicApp')
         $scope.resetSelectedCard = function( newCard ) {
           if ( $scope.selectedCard && $scope.selectedCard.length > 0 ) {
             $scope.selectedCard.removeClass("selected");
+            $scope.selectedOrder = null;
             $scope.resetAllCardLeftPositions();
           }
-          return newCard;
+          if ( newCard ) {
+            $scope.selectedOrder = angular.element(newCard).scope().order;
+            return newCard;
+          }
+        }
+
+        $scope.setAllPointerInteractions = function(pointerValue) {
+          $scope.cardsDeactivated = pointerValue === 'none' ? true : false;
+          $('.resolution-card').each(function( i, card ){
+            var cardOrder = angular.element(card).scope().order;
+            $(card).css( 'pointer-events', pointerValue );
+          });
         }
 
         $scope.getVisHeight = function() {
@@ -94,14 +109,23 @@ angular.module('infographicApp')
 
         element.on('click', function(event){
 
-          // store event target
-          var selectedCard = event.target;
-          console.log( selectedCard );
-
           // check if it's a card based on the classnote, note that it will have an additional class of 'ng-scope'
-          if ( selectedCard.className.indexOf('resolution-card') === -1 ) {
+          if ( event.target.className.indexOf('resolution-card') === -1 ) {
             return;
           }
+
+          // store event target
+          var selectedCard = event.target;
+          // var selectedOrder = angular.element(selectedCard).scope().order;
+
+          // if ( scope.selectedCard && scope.selectedCard.length > 0 ) {
+          //   console.log( selectedOrder, " === ", scope.selectedOrder );
+          //   if ( scope.selectedOrder && selectedOrder === scope.selectedOrder ) {
+          //     console.log( "same" );
+          //     scope.resetSelectedCard();
+          //     return;
+          //   }
+          // }
 
           // reset all the other card positions
           scope.selectedCard = scope.resetSelectedCard( $(selectedCard) ).addClass("selected");
@@ -126,7 +150,7 @@ angular.module('infographicApp')
           $(selectedCard).css('left', shiftLeft );
 
           // move all cards behind selected card
-          var shiftFollowingLeft = shiftLeft + selectedCard.offsetWidth + scope.cardLeftMargin;
+          var shiftFollowingLeft = shiftLeft + selectedCard.offsetWidth;
           var followingCards = $(event.target).prevUntil(event.target);
           followingCards.each(function( i, card ){
             // $(card).css('left', shiftLeft + ( (i+1) * scope.cardLeftMargin) );
@@ -148,10 +172,12 @@ angular.module('infographicApp')
               card = scope.selectedCard.prev(scope.selectedCard)[0];
             }
             if ( card ) {
+              // TODO: can/should I disable all rollovers when using only the keyboard?
+              scope.setAllPointerInteractions('none');
+
               // Note: oldCard and cursor:none/pointer stuff is because 
               // mouseleave/mouseout are not triggered once you start using the keyboard.
               // Otherwise, old card stays :hover highlighted despite it not being selected anymore
-              // TODO: can/should I disable all rollovers when using only the keyboard?
               var oldCard = $(scope.selectedCard);
               oldCard.css({cursor:'none'});
               scope.resetSelectedCard( card );
@@ -161,6 +187,34 @@ angular.module('infographicApp')
           }
 
         });
+
+        $(document).on('mousemove', function(event){
+          if ( scope.cardsDeactivated ){
+            if ( !scope.previousMouseEvent ) {
+              // first mouse move after using keyboard so we need to store the pageX/pageY for later comparision
+              scope.previousMouseEvent = event;
+              return;
+            }
+            // console.log( event.pageX, event.pageY );
+            if ( event.pageX !== scope.previousMouseEvent.pageX || event.pageY !== scope.previousMouseEvent.pageY ) {
+              // mouse has actually moved (browser will re-show cursor by default)
+              scope.setAllPointerInteractions('auto');
+              scope.previousMouseEvent = null;
+            }
+          }
+        });
+
+        // TODO: Add sideways scrolling to move resolution-vis
+        // var lastScrollLeft = 0;
+        // $(window).scroll(function() {
+        //     var documentScrollLeft = $(document).scrollLeft();
+        //     if (lastScrollLeft != documentScrollLeft) {
+        //         console.log('scroll x');
+        //         lastScrollLeft = documentScrollLeft;
+
+        //         // $(".resolution-vis").css('left', '-100px');
+        //     }
+        // });
 
         scope.$watch('mobileDevices', function(){
 
