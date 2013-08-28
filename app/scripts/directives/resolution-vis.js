@@ -24,7 +24,7 @@ angular.module('infographicApp')
         // layout
         $scope.visHeight = 0;
         $scope.visWidth = 0;
-        $scope.cardScale = 0.2;
+        $scope.cardScale = 0.18;
         $scope.cardLeftMargin = 10;
         $scope.cardTopMargin = 0;
 
@@ -145,9 +145,13 @@ angular.module('infographicApp')
           });
 
           // show tooltip and update position based on mouse
-          $('#tooltip').css({ left: event.pageX - visOffsetLeft, 
-                              top:  event.pageY - visOffsetTop,
-                              display: 'none' });
+          $('#tooltip').addClass('show')
+                       .css({ left: event.pageX - visOffsetLeft, 
+                              top:  function() {
+                                var h = $(this).outerHeight(); // TODO: possibility more effecient to store after mouseenter instead?
+                                return event.pageY - visOffsetTop - h/2;
+                              }
+                            });
 
         });
 
@@ -164,18 +168,22 @@ angular.module('infographicApp')
           if ( event.target.className.indexOf('resolution-card') === -1 ) {
 
             // hide tooltip
-            $('#tooltip').removeAttr("style");
+            $('#tooltip').removeClass('show').removeAttr("style");
 
           }else{
 
-            if ( event.target.className.indexOf('selected') > -1 ) {
-              return;
-            }
+            // if ( event.target.className.indexOf('selected') > -1 ) {
+            //   return;
+            // }
 
             // show tooltip and update position based on mouse
-            $('#tooltip').css({ left: event.pageX - visOffsetLeft, 
-                                top:  event.pageY - visOffsetTop,
-                                display: 'block' });
+            $('#tooltip').addClass('show')
+                         .css({ left: event.pageX - visOffsetLeft, 
+                                top:  function() {
+                                  var h = $(this).outerHeight(); // TODO: possibility more effecient to store after mouseenter instead?
+                                  return event.pageY - visOffsetTop - h/2;
+                                }
+                              });
 
           }
 
@@ -227,14 +235,27 @@ angular.module('infographicApp')
 
         // TODO: Add sideways scrolling to move resolution-vis
         // var lastScrollLeft = 0;
-        // $(window).scroll(function() {
-        //     var documentScrollLeft = $(document).scrollLeft();
-        //     if (lastScrollLeft != documentScrollLeft) {
-        //         console.log('scroll x');
-        //         lastScrollLeft = documentScrollLeft;
+        // $(window).scroll(function(event) {
+        //   var documentScrollLeft = $(window).scrollLeft();
+        //   var distance = lastScrollLeft - documentScrollLeft;
+        //   console.log( distance );
+        //   if ( documentScrollLeft !== 0 ) {
 
-        //         // $(".resolution-vis").css('left', '-100px');
-        //     }
+        //     $(".resolution-vis").css('left', function(){
+
+        //                           // console.log( $(this).offset().left, " - ", documentScrollLeft, " >>> ", $(this).offset().left + documentScrollLeft );
+                                  
+        //                           var targetLeft = $(this).offset().left;
+        //                           if ( distance > 0 ) {
+        //                             targetLeft += 1;
+        //                           }else{
+        //                             targetLeft -= 1;
+        //                           }
+        //                           return $(this).css('left', targetLeft+'px');
+        //                         });
+
+        //     lastScrollLeft = documentScrollLeft;
+        //   }
         // });
 
         scope.$watch('mobileDevices', function(){

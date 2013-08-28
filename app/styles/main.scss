@@ -20,7 +20,9 @@ html, body {
 
 .vis-holder {
   // outline: 1px dashed red; //debug
-  overflow: hidden;
+  overflow-y: hidden;
+  // overflow-x: hidden;
+  overflow-x: scroll;
   width: 100%;
   padding-top: 40px; // extra padding for bounce ease effect on cards
   padding-bottom: 2px;
@@ -106,19 +108,37 @@ html, body {
 #tooltip {
   position: absolute;
   display: block;
-  width: 320px;
+  max-width: 320px;
   left: 0;
   top: 0;
   z-index: 1000;
   display: none;
+  &.show {
+    display: inline-block;
+  }
 }
+
+
 
 .tooltip {
   border: 1px solid #ccc;
-  padding: 20px;
-  margin: 10px 0;
+  padding: 15px 20px 15px 15px;
   background-color: #fff;
-  @include single-box-shadow( darken(#f0f0f0, 25%), 0, 0, 30px, -10px, true );
+  // @include single-box-shadow( darken(#f0f0f0, 25%), 0, 0, 15px, -5px, true );
+  @include box-shadow( darken(#f0f0f0, 25%) 0 0 15px -5px inset, #d0d0d0 3px 3px 0px  );
+
+  // box-shadow: 3px 3px 0px #d0d0d0;
+
+  h3 {
+    font-size: 14px;
+    margin: 0;
+  }
+
+  p {
+    font-size: 12px;
+    line-height: 1em;
+  }
+
 }
 
 .footnote {
