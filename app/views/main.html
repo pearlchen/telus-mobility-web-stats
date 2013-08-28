@@ -1,4 +1,4 @@
-<h1>Top {{ mobileDevices.length }} Mobile Devices</h1>
+<h1>Top {{ countDevices() }} {{ displayGrouped && 'Resolutions' || 'Mobile Devices' }}</h1>
 
 <div class="vis-holder">
   <telus-resolution-vis />
@@ -31,7 +31,7 @@
       <li>Heights ranged from: <strong>{{getDeviceProperty('pxHeight','min')}}px to {{getDeviceProperty('pxHeight','max')}}px</strong></li> -->
       <li>Smallest resolution device(s): <strong>{{smallestResolutionDevices[0].pxWidth}}px by {{smallestResolutionDevices[0].pxHeight}}px</strong> ({{getDeviceNamesinArray('smallestResolutionDevices')}})</li>
       <li>Largest resolution device(s): <strong>{{highestResolutionDevices[0].pxWidth}}px by {{highestResolutionDevices[0].pxHeight}}px</strong> ({{getDeviceNamesinArray('highestResolutionDevices')}})</li>
-      <li>The most common resolution was: <strong>!!!!</strong></li>
+      <li>The most common resolution was: <strong>{{mostCommonResolutionDevices.pxWidth}}px by {{mostCommonResolutionDevices.pxHeight}}px</strong> (used on {{mostCommonResolutionDevices.count}} devices)</li>
     </ul>
   </li>
 </ul>

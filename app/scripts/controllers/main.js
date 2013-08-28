@@ -13,7 +13,6 @@ angular.module('infographicApp')
     $scope.highestResolutionDevices = {};
     $scope.mostCommonResolutionDevices = {};
 
-
     $http.get('/data/mobileDevices.json')
        .then(function(res){
 
@@ -108,9 +107,9 @@ angular.module('infographicApp')
 
 
         $scope.mobileDevicesGrouped[width] = [];
+        // var maxDevices = 0;
 
         for ( height in groupedByHeight ) {
-          
 
           if ( $scope.mobileDevicesGrouped[width][height] === undefined ) {
             
@@ -130,10 +129,6 @@ angular.module('infographicApp')
                               "count": names.length,
                               "isPhone": true //remove
                             };
-            // TODO
-            // if ( names.length > ) {
-            //   mostCommonResolutionDevices = deviceObj;
-            // }
 
             $scope.mobileDevicesFlatGroup.push( deviceObj );
 
@@ -148,6 +143,7 @@ angular.module('infographicApp')
 
       }
 
+      $scope.mostCommonResolutionDevices = _.max( $scope.mobileDevicesFlatGroup, function(device){ return device.count; });
       $scope.sortByWidth( $scope.mobileDevicesFlatGroup );  
 
 
@@ -155,6 +151,7 @@ angular.module('infographicApp')
       console.log( "mobileDevicesGroupedLength: ", $scope.mobileDevicesGroupedLength );
       console.log( "mobileDevicesGrouped: ", $scope.mobileDevicesGrouped );
       console.log( "mobileDevicesFlatGroup: ", $scope.mobileDevicesFlatGroup );
+      console.log( "mostCommonResolutionDevices: ", $scope.mostCommonResolutionDevices );
       console.log( "[320][480]: ", $scope.mobileDevicesGrouped[320][480] );
       console.log( "[1024][600]: ", $scope.mobileDevicesGrouped[1024][600] );
 
