@@ -6,7 +6,13 @@ angular.module('infographicApp')
       restrict: 'E', // usage: <telus-resolution-vis />
       replace: true,
       template: '<div class="resolution-vis" style="width:{{visWidth}}px;height:{{visHeight}}px;">' +
-                '  <telus-resolution-card ng-repeat="device in mobileDevices" device="device" order="$index" />' +
+                '  <div id="tooltip" class="tooltip">' +
+                '    <h3>{{tooltipDevice.pxWidth}} x {{tooltipDevice.pxHeight}}:</h3>' +
+                '    <p>{{tooltipDevice.deviceName}}</p>' + 
+                '  </div>' + 
+                '  <div>' +
+                '    <telus-resolution-card ng-repeat="device in mobileDevices" device="device" order="$index" />' +
+                '  </div>' +
                 '</div>',
       scope: true,
       controller: function( $scope ) {
@@ -27,6 +33,8 @@ angular.module('infographicApp')
         $scope.selectedOrder;
         $scope.cardsDeactivated = false;
         $scope.previousMouseEvent = null; //for getting x,y
+
+        $scope.tooltipDevice; // = { pxWidth: 0, pxHeight: 0, deviceName: '' };
 
         $scope.getScaledUnit = function( pixels ) {
           return Math.round( pixels * $scope.cardScale );
@@ -71,32 +79,6 @@ angular.module('infographicApp')
           return $scope.visHeight;
         }
 
-        /*
-
-        // $scope.colors = [ '#A600A6', '#7C1F7C', '#6C006C', '#D235D2', '#D25FD2' ];
-        $scope.colors = [ '#E599E5', '#AC81AC', '#953295', '#F2B6F2', '#F2C6F2' ];
-
-        $scope.getRandomColor = function() {
-          var i = Math.floor( Math.random() * $scope.colors.length );
-          return $scope.colors[i];
-        };
-
-        //TODO: fix up
-        $scope.getGroupedColor = function(index) {
-          var index = index || 0;
-          var percent = Math.round( index / $scope.countDevices() * 10 );
-          var i = Math.round( $scope.colors.length * percent );
-          // console.log ( percent, i, $scope.colors[i] );
-          // return $scope.colors[i];
-          return "white";
-        }
-
-        */
-
-        // scope versus test testing...
-        // this.test = "test";
-        // return (this);
-
       },
       link: function ( scope, element, attrs, controller ) {
             
@@ -107,12 +89,10 @@ angular.module('infographicApp')
 
         // TODO: either move this event back into the card IF pointer-events: none; is not cross platform enough
 
-        element.on('click', function(event){
+        var visOffsetLeft = element.offset().left - 20,
+            visOffsetTop = element.offset().top;
 
-          // check if it's a card based on the classnote, note that it will have an additional class of 'ng-scope'
-          if ( event.target.className.indexOf('resolution-card') === -1 ) {
-            return;
-          }
+        element.on('click', '.resolution-card', function(event){
 
           // store event target
           var selectedCard = event.target;
@@ -158,8 +138,48 @@ angular.module('infographicApp')
             $(card).css('left', shiftFollowingLeft + cardOffset );
           });
 
+          // update tooltip
+          var device = angular.element(event.target).scope().device;
+          scope.$apply(function(){
+            scope.tooltipDevice = device;
+          });
+
+          // show tooltip and update position based on mouse
+          $('#tooltip').css({ left: event.pageX - visOffsetLeft, 
+                              top:  event.pageY - visOffsetTop,
+                              display: 'none' });
+
         });
 
+        element.on('mouseenter', '.resolution-card', function(event){
+          var device = angular.element(event.target).scope().device;
+          scope.$apply(function(){
+            scope.tooltipDevice = device;
+          });
+        });
+
+        // update position of tooltip
+        element.on('mousemove', function(event){
+
+          if ( event.target.className.indexOf('resolution-card') === -1 ) {
+
+            // hide tooltip
+            $('#tooltip').removeAttr("style");
+
+          }else{
+
+            if ( event.target.className.indexOf('selected') > -1 ) {
+              return;
+            }
+
+            // show tooltip and update position based on mouse
+            $('#tooltip').css({ left: event.pageX - visOffsetLeft, 
+                                top:  event.pageY - visOffsetTop,
+                                display: 'block' });
+
+          }
+
+        });
 
         $(document).on('keydown', function(event){
 
@@ -189,6 +209,7 @@ angular.module('infographicApp')
         });
 
         $(document).on('mousemove', function(event){
+
           if ( scope.cardsDeactivated ){
             if ( !scope.previousMouseEvent ) {
               // first mouse move after using keyboard so we need to store the pageX/pageY for later comparision

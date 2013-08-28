@@ -24,12 +24,13 @@ html, body {
   width: 100%;
   padding-top: 40px; // extra padding for bounce ease effect on cards
   padding-bottom: 2px;
+  margin-bottom: 5px; // add margin-bottom due to box-shadow
   @include box-shadow(0px 5px 0px #e2e2e2);
   @include user-select(none);
 }
 
 .resolution-vis {
-  outline: 1px dashed #e2e2e2; //debug
+  // outline: 1px dashed #e2e2e2; //debug
   position: relative; //.resolution-card's will have absolute positioning
 }
 
@@ -46,6 +47,7 @@ html, body {
   background-color: #f0f0f0;
   border: 1px solid darken(#f0f0f0, 25%);
   @include border-radius(3px);
+  // @include single-box-shadow( darken(#f0f0f0, 15%), 0, 0, 30px, -10px, true );
   @include transition(left 150ms ease, top 500ms cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 100ms ease);
   
   .resolution-title {
@@ -68,6 +70,7 @@ html, body {
     color: #333;
     background-color: darken(#f0f0f0, 5%);
     border: 1px solid lighten(#333, 20%);
+    // @include single-box-shadow( darken(#f0f0f0, 25%), 0, 0, 30px, -10px, true );
     .device-names {
       display: block;
       @include user-select(text);
@@ -98,6 +101,24 @@ html, body {
   //   }
   // }
   
+}
+
+#tooltip {
+  position: absolute;
+  display: block;
+  width: 320px;
+  left: 0;
+  top: 0;
+  z-index: 1000;
+  display: none;
+}
+
+.tooltip {
+  border: 1px solid #ccc;
+  padding: 20px;
+  margin: 10px 0;
+  background-color: #fff;
+  @include single-box-shadow( darken(#f0f0f0, 25%), 0, 0, 30px, -10px, true );
 }
 
 .footnote {
