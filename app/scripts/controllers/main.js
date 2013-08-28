@@ -13,7 +13,7 @@ angular.module('infographicApp')
     $scope.highestResolutionDevices = {};
     $scope.mostCommonResolutionDevices = {};
 
-    $http.get('/data/mobileDevices.json')
+    $http.get('data/mobileDevices.json')
        .then(function(res){
 
           $scope.mobileDevicesAll = res.data;
