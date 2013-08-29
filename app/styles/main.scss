@@ -82,7 +82,7 @@ ul {
   overflow-x: hidden;
   // overflow-x: scroll;
   display: inline-block;
-  min-height: 480px;
+  min-height: 300px; // will jump after json loaded
   padding-top: 40px; // extra padding for bounce ease effect on cards
   padding-bottom: 2px;
   // margin-bottom: 5px; // add margin-bottom due to box-shadow
@@ -217,11 +217,12 @@ fieldset {
     font-size: 14px;
     font-weight: bold;
     float: left;
+    margin-right: 10px;
   }
   & > div {
-    float: right;
+    float: left;
     font-size: 15px;
-    margin-top: -3px;
+    margin-top: -2px;
     margin-right: 5px;
   }
   input, label {

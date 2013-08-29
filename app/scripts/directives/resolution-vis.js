@@ -3,7 +3,7 @@
 angular.module('infographicApp')
   .directive('telusResolutionVis', function(){
     return {
-      restrict: 'E', // usage: <telus-resolution-vis />
+      restrict: 'E', // usage: <telus-resolution-vis></telus-resolution-vis>
       replace: true,
       template: '<div class="resolution-vis" style="width:{{visWidth}}px;height:{{visHeight}}px;">' +
                 '  <div id="tooltip" class="tooltip">' +
@@ -24,8 +24,10 @@ angular.module('infographicApp')
         // layout
         $scope.visHeight = 0;
         $scope.visWidth = 0;
-        $scope.cardScale = 0.25;
-        $scope.cardLeftMargin = 4; //10;
+        $scope.cardScale = 0.2;
+        $scope.marginTight = 4;
+        $scope.marginRoomy = 10;
+        $scope.cardLeftMargin = $scope.marginTight;
         $scope.cardTopMargin = 0;
 
         // card interactions
