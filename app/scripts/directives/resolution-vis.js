@@ -24,8 +24,8 @@ angular.module('infographicApp')
         // layout
         $scope.visHeight = 0;
         $scope.visWidth = 0;
-        $scope.cardScale = 0.18;
-        $scope.cardLeftMargin = 10;
+        $scope.cardScale = 0.25;
+        $scope.cardLeftMargin = 4; //10;
         $scope.cardTopMargin = 0;
 
         // card interactions
@@ -34,6 +34,8 @@ angular.module('infographicApp')
         $scope.cardsDeactivated = false;
         $scope.previousMouseEvent = null; //for getting x,y
 
+        // tooltip
+        $scope.showTooltip = false;
         $scope.tooltipDevice; // = { pxWidth: 0, pxHeight: 0, deviceName: '' };
 
         $scope.getScaledUnit = function( pixels ) {
@@ -68,11 +70,19 @@ angular.module('infographicApp')
         }
 
         $scope.setAllPointerInteractions = function(pointerValue) {
+
+          // temp hack for the tooltip since it flashes with keydown:
+          $('#tooltip').css('z-index', function(){
+            return pointerValue === 'none' ? -1 : 1000;
+          });
+
+          // deactivate all the cards
           $scope.cardsDeactivated = pointerValue === 'none' ? true : false;
           $('.resolution-card').each(function( i, card ){
             var cardOrder = angular.element(card).scope().order;
             $(card).css( 'pointer-events', pointerValue );
           });
+
         }
 
         $scope.getVisHeight = function() {
@@ -187,6 +197,11 @@ angular.module('infographicApp')
 
           }
 
+        });
+
+        element.on('mouseleave', function(event){
+          // hide tooltip
+          $('#tooltip').removeClass('show').removeAttr("style");
         });
 
         $(document).on('keydown', function(event){

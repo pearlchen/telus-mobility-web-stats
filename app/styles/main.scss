@@ -11,23 +11,83 @@ html, body {
   padding: 0;
   background: white;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  color: #333;
+  color: #595859;
+  font-size: 100%;
 }
 
 .container {
-  margin: 10px;
+  margin: 10px auto;
+  max-width: 1068px;
+  padding: 0 14px;
+}
+
+p {
+  line-height: 1.4em;
+}
+
+h1 {
+  color: #333;
+  font-size: 27px;
+  line-height: 27px;
+  margin-top: 1.5em;
+  margin-bottom: 0.6em;
+}
+
+h2 {
+  color: #333;
+  text-transform: uppercase;
+  font-size: 17px;
+  line-height: 17px;
+  padding-top: 12px;
+  margin-bottom: -6px;
+}
+
+a {
+  color: #66cc00;
+  &:hover {
+    color: #8be234;
+  }
+}
+
+sup {
+  vertical-align: text-top;
+  a {
+    text-decoration: none;
+    cursor: pointer;
+  }
+}
+
+ul {
+  // margin-left: 0;
+  // padding-left: 0;
+  list-style: none;
+  font-size: 16px;
+  line-height: 20px;
+
+  li {
+    margin: 0.4em 0em;
+  }
+
+  ul {
+    // margin-left: 16px;
+    // padding-left: 12px;
+    list-style: disc;
+  }
+  
 }
 
 .vis-holder {
   // outline: 1px dashed red; //debug
   overflow-y: hidden;
-  // overflow-x: hidden;
-  overflow-x: scroll;
-  width: 100%;
+  overflow-x: hidden;
+  // overflow-x: scroll;
+  display: inline-block;
+  min-height: 480px;
   padding-top: 40px; // extra padding for bounce ease effect on cards
   padding-bottom: 2px;
-  margin-bottom: 5px; // add margin-bottom due to box-shadow
-  @include box-shadow(0px 5px 0px #e2e2e2);
+  // margin-bottom: 5px; // add margin-bottom due to box-shadow
+  // border-bottom: 5px solid #e2e2e2;
+  // @include box-shadow(0px 5px 0px #e2e2e2);
   @include user-select(none);
 }
 
@@ -37,7 +97,7 @@ html, body {
 }
 
 .resolution-card {
-
+  overflow: hidden;
   cursor: pointer;
   position: absolute;
   top: 10px;
@@ -147,4 +207,35 @@ html, body {
 
 fieldset {
   border: none;
+  padding: 0;
+  overflow: auto;
+  // background-color: #e2e2e2;
+  padding: 10px 0px;
+  margin-top: -5px;
+  legend {
+    text-transform: uppercase;
+    font-size: 14px;
+    font-weight: bold;
+    float: left;
+  }
+  & > div {
+    float: right;
+    font-size: 15px;
+    margin-top: -3px;
+    margin-right: 5px;
+  }
+  input, label {
+    display: inline-block;
+    vertical-align: middle;
+  }
+  input {
+    margin-right: 5px;
+  }
+}
+
+footer {
+  margin-top: 80px;
+  text-align: center;
+  font-size: 11px;
+  line-height: 16px;
 }

@@ -65,7 +65,7 @@ angular.module('infographicApp')
           
 
           var title = element.children();
-          if ( title.height() > 15 ) {
+          if ( scope.device.height >= 320 && title.height() > 15 ) {
             element.find('.res-divider').addClass("multiline");
           }
 

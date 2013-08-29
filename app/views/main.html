@@ -1,43 +1,71 @@
-<h1>Top {{ countDevices() }} {{ displayGrouped && 'Resolutions' || 'Mobile Devices' }}</h1>
-
 <div class="vis-holder">
   <telus-resolution-vis />
 </div>
 
 <fieldset>
-  <input type="radio" ng-model="displayGrouped" ng-value="false" ng-change="updateVis()" /><label for="all">Show all devices</label>
-  <input type="radio" ng-model="displayGrouped" ng-value="true" ng-change="updateVis()" /><label for="grouped">Group devices by resolution</label>
+  <legend>
+    Displaying the top {{ countDevices() }} {{ displayGrouped && 'resolutions' || 'mobile devices' }}
+  </legend>
+  <div>
+    <input type="radio" ng-model="displayGrouped" ng-value="false" ng-change="updateVis()" /><label for="all">Show all devices</label>
+    <input type="radio" ng-model="displayGrouped" ng-value="true" ng-change="updateVis()" /><label for="grouped">Group devices by resolution</label>
+  </div>
 </fieldset>
 
-<h2>Stats for July 2013</h2>
+<h1>A look into some of the screens visiting TELUS in July 2013</h1>
+<p>As a companion to the post I wrote for the <a href="http://web.telus.com/blog/" target="_blank">TELUS Digital Labs blog</a> on designing responsively, I thought that I would dig into <strong>real</strong> stats from TELUS' web analytics and find out who (or rather, what) has been looking at our site. Have fun exploring the interactive<sup><a title="Sorry, infographic does not support mobile devices at the moment. Ironic, I know." ng-click="scrollToFootnotes()">*</a></sup> infographic above.</p>
+
+<p>Some interesting stats highlighted below:</p>
+
+<h2>Mobile versus Desktop</h2>
 <ul>
   <li>
     <strong>20%</strong> of page views on <a href="http://telusmobility.com" target="_blank">telusmobility.com</a> were from mobile devices.
     <ul>
       <li>This is up from 14% in 2012, and 8% in 2011.</li>
-      <li>Assuming a steady increase of 6% each year, could this mean that mobile devices will account for half of the traffic by 2018 or sooner?</li>
+      <li>Assuming a steady increase of 6% each year, could this mean that mobile devices will account for half of the traffic by 2018 or even sooner?</li>
     </ul>
   </li>
-  <li><strong>1,532 <em>unique</em></strong> device models accounted for these <strong>8 million</strong> page views.
+</ul>
+<h2>Screen resolution long tail</h2>
+<ul>
+  <li><strong>1,532 <em>unique</em></strong> device models accounted for <strong>8 million</strong> page views.
     <ul>
       <li>Only <strong>99</strong> device models generated <strong>97.5%</strong> of the views.</li>
       <li>A very loooong tail of <strong>1433</strong> devices account for the rest.</li>
     </ul>
   </li>
+</ul>
+
+<h2>Screen resolution ranges</h2>
+<ul>
   <li>
-    In the top 100, there were <strong>{{mobileDevicesGroupedLength}}</strong> unique screen resolutions:
+    In the top 100, there were <strong>{{mobileDevicesGroupedLength}} <em>unique</em> screen resolutions</strong>:
     <ul>
-      <!-- <li>Widths ranged from: <strong>{{getDeviceProperty('pxWidth','min')}}px to {{getDeviceProperty('pxWidth','max')}}px</strong></li>
-      <li>Heights ranged from: <strong>{{getDeviceProperty('pxHeight','min')}}px to {{getDeviceProperty('pxHeight','max')}}px</strong></li> -->
-      <li>Smallest resolution device(s): <strong>{{smallestResolutionDevices[0].pxWidth}}px by {{smallestResolutionDevices[0].pxHeight}}px</strong> ({{getDeviceNamesinArray('smallestResolutionDevices')}})</li>
-      <li>Largest resolution device(s): <strong>{{highestResolutionDevices[0].pxWidth}}px by {{highestResolutionDevices[0].pxHeight}}px</strong> ({{getDeviceNamesinArray('highestResolutionDevices')}})</li>
-      <li>The most common resolution was: <strong>{{mostCommonResolutionDevices.pxWidth}}px by {{mostCommonResolutionDevices.pxHeight}}px</strong> (used on {{mostCommonResolutionDevices.count}} devices)</li>
+      <li>
+        Widths ranged from <strong>{{getDeviceProperty('pxWidth','min')}}px to {{getDeviceProperty('pxWidth','max')}}px</strong> and heights from <strong>{{getDeviceProperty('pxHeight','min')}}px to {{getDeviceProperty('pxHeight','max')}}px</strong>
+      </li>
+      <li>
+        The <strong>smallest</strong> resolution device?
+        <br />
+        The {{getDeviceNamesinArray('smallestResolutionDevices')}} with a screen resolution of {{smallestResolutionDevices[0].pxWidth}}px by {{smallestResolutionDevices[0].pxHeight}}px.
+      </li>
+      <li>
+        The <strong>largest</strong> resolution device?
+        <br />
+        The {{getDeviceNamesinArray('highestResolutionDevices')}} with a screen resolution of {{highestResolutionDevices[0].pxWidth}}px by {{highestResolutionDevices[0].pxHeight}}px
+      </li>
+      <li>
+        The <strong>most common</strong> resolution?
+        <br />
+        {{mostCommonResolutionDevices.pxWidth}}px by {{mostCommonResolutionDevices.pxHeight}}px (which was shared by {{mostCommonResolutionDevices.count}} different devices)
+      </li>
     </ul>
   </li>
 </ul>
 
-
-<!-- <h1>Devices</h1> -->
-<!-- <ul>
-  <li ng-repeat="device in mobileDevices">{{device.deviceName}}, {{device.pxWidth}}, {{device.pxHeight}}, {{ device.os }} {{ device.osVersion }}, {{ device.releaseDate | date:'medium' }}</li>
-</ul> -->
+<footer>
+  This infographic created by <a href="http://twitter.com/PearlChen">@PearlChen</a> for TELUS.
+  <br />
+  Source code available on <a href="https://github.com/pchen/telus-mobility-web-stats">Github</a>.
+</footer>
