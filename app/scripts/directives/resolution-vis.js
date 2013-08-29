@@ -8,7 +8,7 @@ angular.module('infographicApp')
       template: '<div class="resolution-vis" style="width:{{visWidth}}px;height:{{visHeight}}px;">' +
                 '  <div id="tooltip" class="tooltip">' +
                 '    <h3>{{tooltipDevice.pxWidth}} x {{tooltipDevice.pxHeight}}:</h3>' +
-                '    <p>{{tooltipDevice.deviceName}}</p>' + 
+                '    <p>{{tooltipDevice.deviceAlias && tooltipDevice.deviceAlias || tooltipDevice.deviceName}}</p>' + 
                 '  </div>' + 
                 '  <div>' +
                 '    <telus-resolution-card ng-repeat="device in mobileDevices" device="device" order="$index" />' +

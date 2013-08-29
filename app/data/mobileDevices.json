@@ -83,6 +83,7 @@
 },
 {
   "deviceName": "Samsung Samsung Galaxy S II X (SGH-T989D)",
+  "deviceAlias": "Samsung Galaxy S II X",
   "pxWidth": 480,
   "pxHeight": 800,
   "size": 4.0,
@@ -117,6 +118,7 @@
 },
 {
   "deviceName": "Samsung Galaxy Discover (SGH-S730M)",
+  "deviceAlias": "Samsung Galaxy Discover",
   "pxWidth": 320,
   "pxHeight": 480,
   "size": 3.5,
@@ -128,6 +130,7 @@
 },
 {
   "deviceName": "Samsung Galaxy Tab 2 10.1 (GT-P5113)",
+  "deviceAlias": "Samsung Galaxy Tab 2 10.1",
   "pxWidth": 1280,
   "pxHeight": 800,
   "size": 10.1,
@@ -150,6 +153,7 @@
 },
 {
   "deviceName": "Samsung Galaxy Ace 2 x (GT-S7560M)",
+  "deviceAlias": "Samsung Galaxy Ace 2 X",
   "pxWidth": 480,
   "pxHeight": 800,
   "size": 4.0,
@@ -173,6 +177,7 @@
 },
 {
   "deviceName": "Samsung Galaxy Ace (GT-S5830D)",
+  "deviceAlias": "Samsung Galaxy Ace",
   "pxWidth": 320,
   "pxHeight": 480,
   "size": 3.5,
@@ -195,6 +200,7 @@
 },
 {
   "deviceName": "RIM Bold (BlackBerry 9900)",
+  "deviceAlias": "BlackBerry Bold 9900",
   "pxWidth": 640,
   "pxHeight": 480,
   "size": 2.8,
@@ -217,6 +223,7 @@
 },
 {
   "deviceName": "HTC Ace/Desire HD (A9192)",
+  "deviceAlias": "HTC Desire HD",
   "pxWidth": 480,
   "pxHeight": 800,
   "size": 4.3,
@@ -228,6 +235,7 @@
 },
 {
   "deviceName": "LG Optimus One (P500h)",
+  "deviceAlias": "LG Optimus One",
   "pxWidth": 320,
   "pxHeight": 480,
   "size": 3.2,
@@ -239,6 +247,7 @@
 },
 {
   "deviceName": "Samsung Galaxy Tab 2 7.0 (GT-P3113)",
+  "deviceAlias": "Samsung Galaxy Tab 2 7.0",
   "pxWidth": 1024,
   "pxHeight": 600,
   "size": 7,
@@ -250,6 +259,7 @@
 },
 {
   "deviceName": "Samsung Galaxy Note (SGH-I717)",
+  "deviceAlias": "Samsung Galaxy Note",
   "pxWidth": 800,
   "pxHeight": 1280,
   "size": 5.3,
@@ -261,6 +271,7 @@
 },
 {
   "deviceName": "Samsung GT-P7510 Galaxy Tab 10.1",
+  "deviceAlias": "Samsung Galaxy Tab 10.1",
   "pxWidth": 1280,
   "pxHeight": 800,
   "size": 10.1,
@@ -317,6 +328,7 @@
 },
 {
   "deviceName": "Samsung SGH-T959D/Galaxy S Facinate",
+  "deviceAlias": "Samsung Galaxy S Facinate",
   "pxWidth": 480,
   "pxHeight": 800,
   "size": 4,
@@ -328,6 +340,7 @@
 },
 {
   "deviceName": "RIM Torch (BlackBerry 9800)",
+  "deviceAlias": "BlackBerry Torch 9800",
   "pxWidth": 360,
   "pxHeight": 480,
   "size": 3.2,
@@ -339,6 +352,7 @@
 },
 {
   "deviceName": "Samsung Galaxy Rugby Pro (SGH-I547C)",
+  "deviceAlias": "Samsung Galaxy Rugby Pro",
   "pxWidth": 480,
   "pxHeight": 800,
   "size": 4,
@@ -350,6 +364,7 @@
 },
 {
   "deviceName": "Samsung Galaxy S/Fascinate 4G (SGH-T959P)",
+  "deviceAlias": "Samsung Galaxy S",
   "pxWidth": 800,
   "pxHeight": 480,
   "size": 4,
@@ -361,6 +376,7 @@
 },
 {
   "deviceName": "HTC One V (T320a)",
+  "deviceAlias": "HTC One V",
   "pxWidth": 480,
   "pxHeight": 800,
   "size": 3.7,
@@ -372,6 +388,7 @@
 },
 {
   "deviceName": "LG Optimus G (E973)",
+  "deviceAlias": "LG Optimus G",
   "pxWidth": 768,
   "pxHeight": 1280,
   "size": 4.7,
@@ -405,6 +422,7 @@
 },
 {
   "deviceName": "HTC Amaze 4G/Ruby",
+  "deviceAlias": "HTC Amaze 4G",
   "pxWidth": 540,
   "pxHeight": 960,
   "size": 4.3,
@@ -427,6 +445,7 @@
 },
 {
   "deviceName": "Samsung Galaxy Note (GT-N8010)",
+  "deviceAlias": "Samsung Galaxy Note",
   "pxWidth": 0,
   "pxHeight": 0,
   "size": 0,
@@ -438,6 +457,7 @@
 },
 {
   "deviceName": "Samsung Galaxy Ace Q (SGH-I827D)",
+  "deviceAlias": "Samsung Galaxy Ace Q",
   "pxWidth": 800,
   "pxHeight": 1280,
   "size": 5.3,
@@ -449,6 +469,7 @@
 },
 {
   "deviceName": "LG Optimus LTE (P935)",
+  "deviceAlias": "LG Optimus LTE",
   "pxWidth": 720,
   "pxHeight": 1280,
   "size": 4.5,
@@ -460,6 +481,7 @@
 },
 {
   "deviceName": "Sony Ericsson ST18a",
+  "deviceAlias": "Sony Ericsson Xperia ray",
   "pxWidth": 480,
   "pxHeight": 854,
   "size": 3.3,
@@ -471,6 +493,7 @@
 },
 {
   "deviceName": "Samsung GT-P7500 Galaxy Tab 10.1",
+  "deviceAlias": "Samsung Galaxy Tab 10.1",
   "pxWidth": 1280,
   "pxHeight": 800,
   "size": 10.1,
@@ -482,6 +505,7 @@
 },
 {
   "deviceName": "Microsoft Surface - Windows RT",
+  "deviceAlias": "Microsoft Surface",
   "pxWidth": 1366,
   "pxHeight": 768,
   "size": 10.6,
@@ -493,6 +517,7 @@
 },
 {
   "deviceName": "RIM Torch (BlackBerry 9810)",
+  "deviceAlias": "BlackBerry Torch 9810",
   "pxWidth": 480,
   "pxHeight": 640,
   "size": 3.2,
@@ -516,6 +541,7 @@
 },
 {
   "deviceName": "Samsung Galaxy S II LTE (SGH-I727R)",
+  "deviceAlias": "Samsung Galaxy S II LTE",
   "pxWidth": 480,
   "pxHeight": 800,
   "size": 4.3,
@@ -527,7 +553,8 @@
 },
 {
   "deviceName": "Asus Eee Pad Transformer",
-  "deviceAlias": "Asus Transformer (TF101)",
+  "deviceAlias": "Asus Transformer",
+  "deviceCode": "TF101",
   "pxWidth": 1280,
   "pxHeight": 800,
   "size": 10.1,
@@ -539,6 +566,7 @@
 },
 {
   "deviceName": "RIM BlackBerry 9300 Curve 3G",
+  "deviceAlias": "BlackBerry 9300 Curve 3G",
   "pxWidth": 320,
   "pxHeight": 240,
   "size": 2.46,
@@ -550,6 +578,7 @@
 },
 {
   "deviceName": "RIM Bold (BlackBerry 9780)",
+  "deviceAlias": "BlackBerry Bold 9780",
   "pxWidth": 480,
   "pxHeight": 360,
   "size": 2.44,
@@ -642,6 +671,7 @@
 },
 {
   "deviceName": "RIM Curve (BlackBerry 9320)",
+  "deviceAlias": "BlackBerry Curve 9320",
   "pxWidth": 320,
   "pxHeight": 240,
   "size": 2.44,
@@ -653,6 +683,7 @@
 },
 {
   "deviceName": "Archos Internet Tablet (5)",
+  "deviceAlias": "Archos Internet Tablet 5",
   "pxWidth": 800,
   "pxHeight": 480,
   "size": 4.8,
@@ -664,7 +695,8 @@
 },
 {
   "deviceName": "Acer A500/Picasso",
-  "deviceAlias": "Acer Iconia Tab 10.1 (A500)",
+  "deviceAlias": "Acer Iconia Tab 10.1",
+  "deviceCode": "A500",
   "pxWidth": 1280,
   "pxHeight": 800,
   "size": 10.1,
@@ -676,6 +708,7 @@
 },
 {
   "deviceName": "Acer Iconia Tab 10.1 (A200)",
+  "deviceAlias": "Acer Iconia Tab 10.1",
   "pxWidth": 1280,
   "pxHeight": 800,
   "size": 10.1,
@@ -711,6 +744,7 @@
 },
 {
   "deviceName": "RIM Curve (BlackBerry 9360)",
+  "deviceAlias": "BlackBerry Curve 9360",
   "pxWidth": 480,
   "pxHeight": 360,
   "size": 2.44,
@@ -722,6 +756,7 @@
 },
 {
   "deviceName": "LG C710/Aloha",
+  "deviceAlias": "LG Aloha",
   "pxWidth": 480,
   "pxHeight": 800,
   "size": 3.2,
@@ -745,6 +780,7 @@
 },
 {
   "deviceName": "LG P970/Optimus Black",
+  "deviceAlias": "LG Optimus Black",
   "pxWidth": 480,
   "pxHeight": 800,
   "size": 4,
@@ -756,6 +792,7 @@
 },
 {
   "deviceName": "Huawei Ascend Y210 (U8685D)",
+  "deviceAlias": "Huawei Ascend Y210",
   "pxWidth": 320,
   "pxHeight": 480,
   "size": 3.5,
@@ -790,6 +827,7 @@
 },
 {
   "deviceName": "Motorola DEFY (MB525)",
+  "deviceAlias": "Motorola DEFY",
   "pxWidth": 480,
   "pxHeight": 854,
   "size": 3.7,
@@ -801,6 +839,7 @@
 },
 {
   "deviceName": "LG E900 Optimus 7",
+  "deviceAlias": "LG Optimus 7",
   "pxWidth": 480,
   "pxHeight": 800,
   "size": 3.8,
@@ -835,6 +874,7 @@
 },
 {
   "deviceName": "RIM Bold (BlackBerry 9790)",
+  "deviceAlias": "BlackBerry Bold 9790",
   "pxWidth": 480,
   "pxHeight": 360,
   "size": 2.45,
@@ -846,6 +886,7 @@
 },
 {
   "deviceName": "Asus MeMO (ME301T)",
+  "deviceAlias": "Asus MeMO",
   "pxWidth": 1024,
   "pxHeight": 600,
   "size": 7,
@@ -857,6 +898,7 @@
 },
 {
   "deviceName": "HTC One X Plus (PM63100/One X+)",
+  "deviceAlias": "HTC One X Plus",
   "pxWidth": 720,
   "pxHeight": 1280,
   "size": 4.7,
@@ -891,6 +933,7 @@
 },
 {
   "deviceName": "Sony SGPT113JP/S (Tablet S)",
+  "deviceAlias": "Sony Tablet S",
   "pxWidth": 1280,
   "pxHeight": 800,
   "size": 9.4,
@@ -902,6 +945,7 @@
 },
 {
   "deviceName": "Samsung Galaxy S2 HD LTE (SGH-I757M)",
+  "deviceAlias": "Samsung Galaxy S2 HD LTE",
   "pxWidth": 720,
   "pxHeight": 1280,
   "size": 4.65,
@@ -913,6 +957,7 @@
 },
 {
   "deviceName": "Samsung Galaxy S Vibrant (GT-i9000M)",
+  "deviceAlias": "Samsung Galaxy S Vibrant",
   "pxWidth": 480,
   "pxHeight": 800,
   "size": 4,
@@ -924,6 +969,7 @@
 },
 {
   "deviceName": "Samsung Galaxy Tab 8.9 4G LTE (SGH-I957D)",
+  "deviceAlias": "Samsung Galaxy Tab 8.9 4G LTE",
   "pxWidth": 1280,
   "pxHeight": 800,
   "size": 8.9,
@@ -935,6 +981,7 @@
 },
 {
   "deviceName": "Samsung GT-I9100 Galaxy S2",
+  "deviceAlias": "Samsung Galaxy S2",
   "pxWidth": 480,
   "pxHeight": 800,
   "size": 4.3,
@@ -957,6 +1004,7 @@
 },
 {
   "deviceName": "ASUS Transformer Pad Infinity (TF700T)",
+  "deviceAlias": "ASUS Transformer Pad Infinity",
   "pxWidth": 1920,
   "pxHeight": 1200,
   "size": 10.1,
@@ -968,6 +1016,7 @@
 },
 {
   "deviceName": "RIM BlackBerry 9700/Onyx",
+  "deviceAlias": "BlackBerry Onyx 9700",
   "pxWidth": 480,
   "pxHeight": 360,
   "size": 2.44,
@@ -1002,6 +1051,7 @@
 },
 {
   "deviceName": "Huawei Ascent P1 S (U9200)",
+  "deviceAlias": "Huawei Ascent P1 S",
   "pxWidth": 540,
   "pxHeight": 960,
   "size": 4.3,
@@ -1024,6 +1074,7 @@
 },
 {
   "deviceName": "Asus Transformer Prime (TF201)",
+  "deviceAlias": "Asus Transformer Prime",
   "pxWidth": 1280,
   "pxHeight": 800,
   "size": 10.1,
@@ -1035,6 +1086,7 @@
 },
 {
   "deviceName": "Sony Xperia T (LT30a)",
+  "deviceAlias": "Sony Xperia T",
   "pxWidth": 720,
   "pxHeight": 1280,
   "size": 4.55,
@@ -1046,6 +1098,7 @@
 },
 {
   "deviceName": "LG Optimus G (E971)",
+  "deviceAlias": "LG Optimus G",
   "pxWidth": 768,
   "pxHeight": 1280,
   "size": 4.7,
@@ -1057,6 +1110,7 @@
 },
 {
   "deviceName": "Acer Iconia Tab A210",
+  "deviceAlias": "Acer Iconia Tab",
   "pxWidth": 1280,
   "pxHeight": 800,
   "size": 10.1,
@@ -1068,6 +1122,7 @@
 },
 {
   "deviceName": "Samsung Galaxy Gio (GT-S5660m)",
+  "deviceAlias": "Samsung Galaxy Gio",
   "pxWidth": 320,
   "pxHeight": 480,
   "size": 3.2,
@@ -1079,6 +1134,7 @@
 },
 {
   "deviceName": "Samsung Galaxy Note 8.0 (GT-N5110)",
+  "deviceAlias": "Samsung Galaxy Note 8.0",
   "pxWidth": 800,
   "pxHeight": 1280,
   "size": 8,
@@ -1124,6 +1180,7 @@
 },
 {
   "deviceName": "Motorola RAZR V (XT885)",
+  "deviceAlias": "Motorola RAZR V",
   "pxWidth": 540,
   "pxHeight": 960,
   "size": 4.3,
@@ -1135,6 +1192,7 @@
 },
 {
   "deviceName": "HTC Z710A Sensation",
+  "deviceAlias": "HTC Sensation",
   "pxWidth": 540,
   "pxHeight": 960,
   "size": 4.3,
