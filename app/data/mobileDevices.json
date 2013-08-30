@@ -444,15 +444,15 @@
   "isPhone": true
 },
 {
-  "deviceName": "Samsung Galaxy Note (GT-N8010)",
-  "deviceAlias": "Samsung Galaxy Note",
-  "pxWidth": 0,
-  "pxHeight": 0,
-  "size": 0,
-  "ppiResolution": 0,
-  "os": "",
-  "osVersion": 0,
-  "releaseDate": "",
+  "deviceName": "Samsung Galaxy Note 10.1 (GT-N8010)",
+  "deviceAlias": "Samsung Galaxy Note 10.1",
+  "pxWidth": 1280,
+  "pxHeight": 800,
+  "size": 10.1,
+  "ppiResolution": 149,
+  "os": "Android",
+  "osVersion": 4.0,
+  "releaseDate": "Aug 1, 2012",
   "isPhone": true
 },
 {
