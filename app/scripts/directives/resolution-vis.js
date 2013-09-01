@@ -7,11 +7,14 @@ angular.module('infographicApp')
       replace: true,
       template: '<div class="resolution-vis" style="width:{{visWidth}}px;height:{{visHeight}}px;">' +
                 '  <div id="tooltip" class="tooltip">' +
-                '    <h3>{{tooltipDevice.pxWidth}} x {{tooltipDevice.pxHeight}}:</h3>' +
-                '    <p>{{tooltipDevice.deviceAlias && tooltipDevice.deviceAlias || tooltipDevice.deviceName}}</p>' + 
+                '    <h3>{{tooltipDevice.pxWidth}}px by {{tooltipDevice.pxHeight}}px</h3>' +
+                '    <p>' +
+                '      <span ng-bind-html-unsafe="getIcon(tooltipDevice)"> ::{{getIcon(tooltipDevice)}}</span>' +
+                '      {{tooltipDevice.deviceAlias && tooltipDevice.deviceAlias || tooltipDevice.deviceName}}</p>' + 
                 '  </div>' + 
                 '  <div>' +
-                '    <telus-resolution-card ng-repeat="device in mobileDevices" device="device" order="$index" />' +
+                '    <telus-resolution-card ng-repeat="device in mobileDevices" device="device" order="$index" >' +
+                '    </telus-resolution-card>' +
                 '  </div>' +
                 '</div>',
       scope: true,
@@ -25,7 +28,7 @@ angular.module('infographicApp')
         $scope.visHeight = 0;
         $scope.visWidth = 0;
         $scope.cardScale = 0.2;
-        $scope.marginTight = 4;
+        $scope.marginTight = 5;
         $scope.marginRoomy = 10;
         $scope.cardLeftMargin = $scope.marginTight;
         $scope.cardTopMargin = 0;
@@ -39,6 +42,7 @@ angular.module('infographicApp')
         // tooltip
         $scope.showTooltip = false;
         $scope.tooltipDevice; // = { pxWidth: 0, pxHeight: 0, deviceName: '' };
+        $scope.visOffset = { left: 0, top: 0 };
 
         $scope.getScaledUnit = function( pixels ) {
           return Math.round( pixels * $scope.cardScale );
@@ -91,6 +95,73 @@ angular.module('infographicApp')
           return $scope.visHeight;
         }
 
+        $scope.positionToolTip = function( mouseX, mouseY ) {
+
+          var tooltip = $("#tooltip"),
+              w = tooltip.outerWidth(),
+              h = tooltip.outerHeight();
+              
+          // tooltip anchored to top left
+          var x = ( mouseX || 0 ) - $scope.visOffset.left,
+              y = ( mouseY || 0 ) - $scope.visOffset.top,
+              pad = 10,
+              proposedX = x + pad,
+              proposedY = y + pad;
+          
+          // but if the tooltip is going to go offscreen on the right, flip to being on the left
+          // and if the tooltip is going to go offscreen on the bottom, flip to being on top
+          x = ( proposedX + w < $scope.visWidth ) ? ( proposedX ) : ( x - w - pad ); 
+          y = ( proposedY + h < $scope.visHeight ) ? ( proposedY ) : ( y - h - pad ); 
+
+          tooltip.addClass('show').css({ left: x, top: y });
+
+        }
+
+        $scope.hideToolTip = function() {
+          $('#tooltip').removeClass('show').removeAttr("style");
+        }
+
+        $scope.getSimpleOsName = function( fullOsName ) {
+
+          var os = fullOsName.toLowerCase();
+          if ( os === 'android' ) {
+            return 'android';
+          }
+          else if ( os === 'ios' ) {
+            return 'ios';
+          }
+          else if ( os.indexOf('windows') > -1 ) {
+            return 'windows';
+          }
+          else if ( os.indexOf('blackberry') > -1 ) {
+            return 'blackberry';
+          }
+          else if ( os.indexOf('webos') > -1 ) {
+            return 'webos';
+          }
+          else if ( os.indexOf('playstation') > -1 ) {
+            return 'playstation';
+          }
+          else {
+            return undefined;
+          }
+
+        }
+
+        $scope.getIcon = function(device) {
+
+          if ( device && device.os ) {
+            var os = $scope.getSimpleOsName( device.os );
+            if ( os !== '' ){
+              return '<img src="images/' + os + '.svg" width="12" height="12" alt="" />';
+            }
+            else {
+              return '';
+            }
+          }
+
+        }
+
       },
       link: function ( scope, element, attrs, controller ) {
             
@@ -101,8 +172,8 @@ angular.module('infographicApp')
 
         // TODO: either move this event back into the card IF pointer-events: none; is not cross platform enough
 
-        var visOffsetLeft = element.offset().left - 20,
-            visOffsetTop = element.offset().top;
+        scope.visOffset = { left: element.offset().left, 
+                            top: element.offset().top };
 
         element.on('click', '.resolution-card', function(event){
 
@@ -157,13 +228,7 @@ angular.module('infographicApp')
           });
 
           // show tooltip and update position based on mouse
-          $('#tooltip').addClass('show')
-                       .css({ left: event.pageX - visOffsetLeft, 
-                              top:  function() {
-                                var h = $(this).outerHeight(); // TODO: possibility more effecient to store after mouseenter instead?
-                                return event.pageY - visOffsetTop - h/2;
-                              }
-                            });
+          scope.positionToolTip( event.pageX, event.pageY );
 
         });
 
@@ -178,10 +243,7 @@ angular.module('infographicApp')
         element.on('mousemove', function(event){
 
           if ( event.target.className.indexOf('resolution-card') === -1 ) {
-
-            // hide tooltip
-            $('#tooltip').removeClass('show').removeAttr("style");
-
+            scope.hideToolTip();
           }else{
 
             // if ( event.target.className.indexOf('selected') > -1 ) {
@@ -189,21 +251,14 @@ angular.module('infographicApp')
             // }
 
             // show tooltip and update position based on mouse
-            $('#tooltip').addClass('show')
-                         .css({ left: event.pageX - visOffsetLeft, 
-                                top:  function() {
-                                  var h = $(this).outerHeight(); // TODO: possibility more effecient to store after mouseenter instead?
-                                  return event.pageY - visOffsetTop - h/2;
-                                }
-                              });
+            scope.positionToolTip( event.pageX, event.pageY );
 
           }
 
         });
 
         element.on('mouseleave', function(event){
-          // hide tooltip
-          $('#tooltip').removeClass('show').removeAttr("style");
+          scope.hideToolTip();
         });
 
         $(document).on('keydown', function(event){
@@ -289,6 +344,10 @@ angular.module('infographicApp')
           scope.visHeight = scope.getScaledUnit( scope.maxCardHeight ) + scope.cardTopMargin;
           scope.visWidth = scope.getLeftPositionForCard( 0 ) + scope.getScaledUnit( scope.mobileDevices[0].pxWidth );
 
+        });
+
+        scope.$watch('displayGrouped', function(){
+          scope.cardLeftMargin = scope.displayGrouped ? scope.marginRoomy : scope.marginTight;
         });
 
       }

@@ -1,0 +1,15 @@
+// colors thanks to http://tools.medialab.sciences-po.fr/iwanthue/examples.php
+$yellow: #DFCC41;
+$purple: #D4A2E1;
+$blue: #53DCD1;
+$green: #7BE07E;
+$orange: #F0B040;
+$gold: #CADB44;
+
+// device-specific colors
+$ios: $yellow;
+$android: $green;
+$blackberry: $blue;
+$windows: $orange;
+$webos: $purple;
+$playstation: $gold;

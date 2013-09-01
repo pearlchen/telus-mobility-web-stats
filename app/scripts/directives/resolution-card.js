@@ -1,25 +1,46 @@
 'use strict';
 
 angular.module('infographicApp')
-  .directive('telusResolutionCard', function(){
+  .directive('telusResolutionCard', function($timeout){
     return {
-      restrict: 'E', // usage: <telus-resolution-card device="deviceObject" order="orderObj" />
-      replace: true,
-      template: '<div class="resolution-card">' +
-                '  <div class="resolution-title">' + 
-                '    {{device.pxWidth}}' +
-                '    <span class="res-divider">x</span>' + 
-                '    {{device.pxHeight}}' +
-                '    <span class="count" ng-show="device.count">({{device.count}})</span>' +
-                '  </div>' + 
-                '  <div class="device-names">{{getDeviceName()}}</div>' + 
-                '</div>',
       require:'^telusResolutionVis',
       scope: { 
         device: '=', 
         order: '='
       },
+      restrict: 'E', // usage: <telus-resolution-card device="deviceObject" order="orderObj" />
+      replace: true,
+      template: '<div class="resolution-card {{deviceOsClass}}" ' +
+                '    ng-class="{ highlight:isHighlighted, phone:isPhone, tablet:isTablet }" ' +
+                '    ng-style="cardStyle"' +
+                '  >' +
+                '  <div class="resolution-title">' + 
+                '    {{device.pxWidth}}' +
+                '    <span class="res-divider" ng-class="{ multiline:multilineResolution }">x</span>' + 
+                '    {{device.pxHeight}}' +
+                '    <span class="count" ng-show="device.count">({{device.count}})</span>' +
+                '  </div>' + 
+                '  <div class="device-names">{{getDeviceName()}}</div>' + 
+                '</div>',
       controller: function( $scope, $element, $attrs ) {
+
+        // css classes
+        $scope.deviceOsClass;
+        $scope.isHighlighted;
+        $scope.isPhone;
+        $scope.isTablet;
+
+        // css styles
+        $scope.cardStyle;
+
+        // card labels
+        $scope.multilineResolution = false;
+
+        $scope.updateHighlight = function( highlightedOs ) {
+          var highlightedOs = highlightedOs || $scope.$parent.highlightedOs;
+          var i = _.indexOf( highlightedOs, $scope.deviceOsClass );
+          $scope.isHighlighted = ( i === -1 ) ? false : true;
+        }
 
         $scope.getDeviceName = function() {
           return $scope.device.deviceAlias || $scope.device.deviceName;
@@ -28,57 +49,56 @@ angular.module('infographicApp')
       },
       link: function ( scope, element, attrs, controller ) {
 
-        // console.log( "controller", controller, controller.test );
-
+        // don't display devices that have no resolution specs:
         if ( scope.device.pxWidth === 0 && scope.device.pxHeight === 0 ) {
-          // don't display devices that have no resolution specs
           return;
         }
 
-        var numDevices = scope.$parent.countDevices();
-        
-        // put this in so dom update only fires once
-        // TODO: look into why??
-        scope.$watch('', function() {
+        // wrap in $watch since the model changes in main.js and this directive is also part of a ng-repeat
+        // TODO: verify the above comment...
+        scope.$watch('device', function() {
 
+          // update css style based on device specs:
           var defaultTop = scope.$parent.getVisHeight(),
               top = scope.$parent.getTopPositionForCard(scope.device.pxHeight),
               width = scope.$parent.getScaledUnit(scope.device.pxWidth),
               height = scope.$parent.getScaledUnit(scope.device.pxHeight),
               left = scope.$parent.getLeftPositionForCard(scope.order);
 
-          // update css for each card
-          element.css( {  width:  width + 'px',
-                          height: height + 'px',
-                          left:   left + 'px',
-                          top:    defaultTop + 'px', //offscreen to start, animate in in setTimeout()
-                          opacity: 0
-                        } );
+          scope.cardStyle = { width:  width + 'px',
+                              height: height + 'px',
+                              left:   left + 'px',
+                              top:    defaultTop + 'px', //offscreen to start, animated in in $timeout()
+                              opacity: 0 // invisible to start, animated in in $timeout()
+                            }
 
-          // animation for css
-          setTimeout( function(){
-            element.css( {
-              top: top + 'px',
-              opacity: 1
-            })
-          }, (numDevices-scope.order) * 30 );
+          // create staggered css animation:
+          var numDevices = scope.$parent.countDevices(),
+              animationDelay = ( numDevices - scope.order ) * 30;
+
+          $timeout( function(){
+            scope.cardStyle.top = top + 'px';
+            scope.cardStyle.opacity = 1;
+          }, animationDelay );
           
-
-          var title = element.children();
+          // in the case where the resolution is small (width-wise),
+          // break card label onto two lines:
           if ( scope.device.height >= 320 && title.height() > 15 ) {
-            element.find('.res-divider').addClass("multiline");
+            $scope.multilineResolution = true;
           }
 
-          if ( scope.device.isPhone ) {
-            element.addClass("phone");
-          }else{
-            element.addClass("tablet");
-          }
+          // update classes:
+          scope.deviceOsClass = scope.$parent.getSimpleOsName( scope.device.os );
+          scope.isPhone = scope.device.isPhone;
+          scope.isTablet = !scope.device.isPhone;
+          scope.updateHighlight(); // pass null to update highlight using filters set in $parent
 
         });
 
-        // events
-        // element.on( 'click', scope.showDeviceModel );
+        // listen for changes in the device OS highlight filter in main.js:
+        scope.$on('EVENT_OS_HIGHLIGHT_CHANGE', function(event, args){
+          scope.updateHighlight(args);
+        });
 
       }
     };

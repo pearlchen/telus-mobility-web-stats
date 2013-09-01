@@ -13,6 +13,48 @@ angular.module('infographicApp')
     $scope.highestResolutionDevices = {};
     $scope.mostCommonResolutionDevices = {};
 
+    // $scope.highlightedOs = []; // default to none
+    $scope.highlightedOs = [ 'ios', 'android', 'blackberry', 'windows', 'webos', 'playstation' ]; //default to all
+
+    $scope.filters = [
+      { 
+        id: 'ios', 
+        imgSrc: 'images/ios.svg', 
+        altAttr: 'Apple logo', 
+        titleAttr: 'Highlight iOS devices'
+      },
+      { 
+        id: 'android', 
+        imgSrc: 'images/android.svg', 
+        altAttr: 'Android logo', 
+        titleAttr: 'Highlight Android devices'
+      },
+      { 
+        id: 'blackberry', 
+        imgSrc: 'images/blackberry.svg', 
+        altAttr: 'BlackBerry logo', 
+        titleAttr: 'Highlight BlackBerry devices'
+      },
+      { 
+        id: 'windows', 
+        imgSrc: 'images/windows.svg', 
+        altAttr: 'Windows Phone logo', 
+        titleAttr: 'Highlight Windows Phone devices'
+      },
+      { 
+        id: 'webos', 
+        imgSrc: 'images/webos.svg', 
+        altAttr: 'webOS logo', 
+        titleAttr: 'Highlight webOS devices'
+      },
+      { 
+        id: 'playstation', 
+        imgSrc: 'images/playstation.svg', 
+        altAttr: 'PlayStation logo', 
+        titleAttr: 'Highlight PlayStation devices'
+      }
+    ];
+
     $http.get('data/mobileDevices.json')
        .then(function(res){
 
@@ -47,6 +89,8 @@ angular.module('infographicApp')
 
     $scope.countDevices = function( useGroupedTotal ) {
       
+      //TODO: this could instead use $scope.$watch('$scope.mobileDevices', function(){}); to update this
+
       var useGroupedTotal = useGroupedTotal || $scope.displayGrouped;
 
       if ( useGroupedTotal ) {
@@ -180,5 +224,31 @@ angular.module('infographicApp')
     //   var date = new Date( Date.parse( date ) );
     //   console.log(date);
     // };
+
+    //TODO: add a deselect in
+
+    $scope.highlightDevices = function(os) {
+
+      console.log( os );
+      if (!os) return;
+
+      var i = _.indexOf( $scope.highlightedOs, os );
+      if ( i === -1 ) {
+        $scope.highlightedOs.push( os ); //add
+      }
+      else {
+        $scope.highlightedOs.splice( i, 1 ); //remove
+      }
+      console.log( "$scope.highlightedOs: ", i, $scope.highlightedOs );
+      $scope.$broadcast('EVENT_OS_HIGHLIGHT_CHANGE', $scope.highlightedOs );
+
+    }
+
+    $scope.checkIfHighlighted = function(os) {
+      var found = _.find( $scope.highlightedOs, function(highlight){
+        return highlight.indexOf( os ) > -1;
+      });
+      return ( found ? true : false );
+    }
 
   });
