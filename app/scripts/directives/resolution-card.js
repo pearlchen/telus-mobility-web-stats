@@ -6,9 +6,10 @@ angular.module('infographicApp')
       require:'^telusResolutionVis',
       scope: { 
         device: '=', 
-        order: '='
+        order: '=',
+        offset: '='
       },
-      restrict: 'E', // usage: <telus-resolution-card device="deviceObject" order="orderObj" />
+      restrict: 'E', // usage: <telus-resolution-card device="deviceObject" order="orderObj" offset="numDevices-orderObj" />
       replace: true,
       template: '<div class="resolution-card {{deviceOsClass}}" ' +
                 '    ng-class="{ highlight:isHighlighted, phone:isPhone, tablet:isTablet }" ' +
@@ -47,7 +48,7 @@ angular.module('infographicApp')
         };
 
       },
-      link: function ( scope, element, attrs, controller ) {
+      link: function ( scope, element, attrs, visCtrl ) {
 
         // don't display devices that have no resolution specs:
         if ( scope.device.pxWidth === 0 && scope.device.pxHeight === 0 ) {
@@ -59,11 +60,11 @@ angular.module('infographicApp')
         scope.$watch('device', function() {
 
           // update css style based on device specs:
-          var defaultTop = scope.$parent.getVisHeight(),
-              top = scope.$parent.getTopPositionForCard(scope.device.pxHeight),
-              width = scope.$parent.getScaledUnit(scope.device.pxWidth),
-              height = scope.$parent.getScaledUnit(scope.device.pxHeight),
-              left = scope.$parent.getLeftPositionForCard(scope.order);
+          var defaultTop = visCtrl.getVisHeight(),
+              top     = visCtrl.getTopPositionForCard( scope.device.pxHeight ),
+              width   = visCtrl.getScaledUnit( scope.device.pxWidth ),
+              height  = visCtrl.getScaledUnit( scope.device.pxHeight ),
+              left    = visCtrl.getLeftPositionForCard( scope.order );
 
           scope.cardStyle = { width:  width + 'px',
                               height: height + 'px',
@@ -73,13 +74,12 @@ angular.module('infographicApp')
                             }
 
           // create staggered css animation:
-          var numDevices = scope.$parent.countDevices(),
-              animationDelay = ( numDevices - scope.order ) * 30;
+          var animationDelay = 30; //30 seems just quick enough but not too quick...
 
           $timeout( function(){
             scope.cardStyle.top = top + 'px';
             scope.cardStyle.opacity = 1;
-          }, animationDelay );
+          }, scope.offset * animationDelay );
           
           // in the case where the resolution is small (width-wise),
           // break card label onto two lines:
@@ -88,7 +88,7 @@ angular.module('infographicApp')
           }
 
           // update classes:
-          scope.deviceOsClass = scope.$parent.getSimpleOsName( scope.device.os );
+          scope.deviceOsClass = visCtrl.getSimpleOsName( scope.device.os );
           scope.isPhone = scope.device.isPhone;
           scope.isTablet = !scope.device.isPhone;
           scope.updateHighlight(); // pass null to update highlight using filters set in $parent
@@ -96,6 +96,9 @@ angular.module('infographicApp')
         });
 
         // listen for changes in the device OS highlight filter in main.js:
+        // TODO: What would be more efficient permformance-wise?
+        // Broadcasting a single event from main controller and looping thorugh the array here?
+        // Or broadcasting several events and no looping here? e.g. EVENT_ANDROID_HIGHLIGHT_CHANGE
         scope.$on('EVENT_OS_HIGHLIGHT_CHANGE', function(event, args){
           scope.updateHighlight(args);
         });

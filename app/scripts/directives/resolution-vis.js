@@ -13,7 +13,7 @@ angular.module('infographicApp')
                 '      {{tooltipDevice.deviceAlias && tooltipDevice.deviceAlias || tooltipDevice.deviceName}}</p>' + 
                 '  </div>' + 
                 '  <div>' +
-                '    <telus-resolution-card ng-repeat="device in mobileDevices" device="device" order="$index" >' +
+                '    <telus-resolution-card ng-repeat="device in mobileDevices" device="device" order="$index" offset="numCards-$index">' +
                 '    </telus-resolution-card>' +
                 '  </div>' +
                 '</div>',
@@ -44,24 +44,17 @@ angular.module('infographicApp')
         $scope.tooltipDevice; // = { pxWidth: 0, pxHeight: 0, deviceName: '' };
         $scope.visOffset = { left: 0, top: 0 };
 
-        $scope.getScaledUnit = function( pixels ) {
+        this.getScaledUnit = function( pixels ) {
           return Math.round( pixels * $scope.cardScale );
         }
 
-        $scope.getTopPositionForCard = function( cardHeight ) {
-          return $scope.getScaledUnit( $scope.maxCardHeight - cardHeight );
+        this.getTopPositionForCard = function( cardHeight ) {
+          return this.getScaledUnit( $scope.maxCardHeight - cardHeight );
         };
 
-        $scope.getLeftPositionForCard = function( cardOrder ) {
+        this.getLeftPositionForCard = function( cardOrder ) {
           return ( $scope.numCards - cardOrder ) * $scope.cardLeftMargin;
         };
-
-        $scope.resetAllCardLeftPositions = function() {
-          $('.resolution-card').each(function( i, card ){
-            var cardOrder = angular.element(card).scope().order;
-            $(card).css( 'left', $scope.getLeftPositionForCard( cardOrder ) );
-          });
-        }
 
         $scope.resetSelectedCard = function( newCard ) {
           if ( $scope.selectedCard && $scope.selectedCard.length > 0 ) {
@@ -91,7 +84,7 @@ angular.module('infographicApp')
 
         }
 
-        $scope.getVisHeight = function() {
+        this.getVisHeight = function() {
           return $scope.visHeight;
         }
 
@@ -121,7 +114,7 @@ angular.module('infographicApp')
           $('#tooltip').removeClass('show').removeAttr("style");
         }
 
-        $scope.getSimpleOsName = function( fullOsName ) {
+        this.getSimpleOsName = function( fullOsName ) {
 
           var os = fullOsName.toLowerCase();
           if ( os === 'android' ) {
@@ -147,11 +140,15 @@ angular.module('infographicApp')
           }
 
         }
+        
 
-        $scope.getIcon = function(device) {
+      },
+      link: function ( scope, element, attrs, visCtrl ) {
+
+        scope.getIcon = function(device) {
 
           if ( device && device.os ) {
-            var os = $scope.getSimpleOsName( device.os );
+            var os =  visCtrl.getSimpleOsName( device.os );
             if ( os !== '' ){
               return '<img src="images/' + os + '.svg" width="12" height="12" alt="" />';
             }
@@ -162,13 +159,19 @@ angular.module('infographicApp')
 
         }
 
-      },
-      link: function ( scope, element, attrs, controller ) {
-            
+        scope.resetAllCardLeftPositions = function() {
+          $('.resolution-card').each(function( i, card ){
+            var cardOrder = angular.element(card).scope().order;
+            $(card).css( 'left', visCtrl.getLeftPositionForCard( cardOrder ) );
+          });
+        }
+
         //TODO: make the position of the selected card to be underneath the mouse cursor.
 
         // scope versus test testing...
         // console.log( "parent link: ", controller, controller.test );
+
+        console.log( "viz", visCtrl );
 
         // TODO: either move this event back into the card IF pointer-events: none; is not cross platform enough
 
@@ -203,7 +206,7 @@ angular.module('infographicApp')
 
             // TODO: instead use current card's order            
             // console.log( angular.element(prevCard).scope().order );
-            var prevCardOffsetLeft = scope.getLeftPositionForCard( angular.element(prevCard).scope().order )
+            var prevCardOffsetLeft = visCtrl.getLeftPositionForCard( angular.element(prevCard).scope().order )
             shiftLeft = prevCardOffsetLeft + prevCard.offsetWidth + scope.cardLeftMargin;
 
           }else{
@@ -341,8 +344,8 @@ angular.module('infographicApp')
           scope.numCards = scope.$parent.countDevices();
 
           // update dom bindings
-          scope.visHeight = scope.getScaledUnit( scope.maxCardHeight ) + scope.cardTopMargin;
-          scope.visWidth = scope.getLeftPositionForCard( 0 ) + scope.getScaledUnit( scope.mobileDevices[0].pxWidth );
+          scope.visHeight = visCtrl.getScaledUnit( scope.maxCardHeight ) + scope.cardTopMargin;
+          scope.visWidth = visCtrl.getLeftPositionForCard( 0 ) + visCtrl.getScaledUnit( scope.mobileDevices[0].pxWidth );
 
         });
 
