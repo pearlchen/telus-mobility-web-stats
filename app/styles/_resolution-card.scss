@@ -26,6 +26,13 @@
     }
   }
 
+  .count {
+    opacity: 0.6;
+    &.multiline {
+      display: block;
+    }
+  }
+
   @mixin highlight-color-combo( $seed-color ) {
     background-color: $seed-color;
     border-color: darken( $seed-color, 10% );
@@ -68,15 +75,15 @@
 
   &.selected {
     border-width: 2px;    
+    .device-names {
+      display: block;
+      @include user-select(text);
+    }
   }
 
   &.selected:not(.highlight) {
     color: #333;
     background-color: darken(#fafafa, 4%); //#f0f0f0;
-    .device-names {
-      display: block;
-      @include user-select(text);
-    }
   }
 
   .device-names {

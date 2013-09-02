@@ -12,12 +12,13 @@
 
     <input type="radio" ng-model="displayGrouped" ng-value="false" ng-change="updateVis()" />
     <label for="all">Show all devices</label>
-    <img ng-repeat="filter in filters" ng-src="{{filter.imgSrc}}" alt="{{filter.altAttr}}" title="{{filter.titleAttr}}"
+    <img ng-repeat="filter in filters" ng-src="{{filter.imgSrc}}" alt="{{filter.altAttr}}"
+      title="{{filter.titleAttr}}"
       height="20" width="20" 
-      ng-click="highlightDevices(filter.id)"
+      ng-click="toggleDeviceHighlight(filter.id)"
       ng-show="!displayGrouped"
       class="device-highlighter {{filter.id}}" 
-      ng-class="{'selected': checkIfHighlighted(filter.id)}" />
+      ng-class="{'selected': filter.highlighted}" />
     
     <input type="radio" ng-model="displayGrouped" ng-value="true" ng-change="updateVis()" />
     <label for="grouped">Group devices by resolution</label>

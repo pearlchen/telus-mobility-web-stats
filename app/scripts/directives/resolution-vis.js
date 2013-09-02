@@ -27,10 +27,15 @@ angular.module('infographicApp')
         // layout
         $scope.visHeight = 0;
         $scope.visWidth = 0;
-        $scope.cardScale = 0.2;
+
+        $scope.SCALE_SMALLER = 0.2;
+        $scope.SCALE_LARGER = 0.25;
+        $scope.cardScale = $scope.SCALE_SMALLER;
+
         $scope.marginTight = 5;
         $scope.marginRoomy = 10;
         $scope.cardLeftMargin = $scope.marginTight;
+
         $scope.cardTopMargin = 0;
 
         // card interactions
@@ -116,6 +121,10 @@ angular.module('infographicApp')
 
         this.getSimpleOsName = function( fullOsName ) {
 
+          if ( !fullOsName ) {
+            return;
+          }
+
           var os = fullOsName.toLowerCase();
           if ( os === 'android' ) {
             return 'android';
@@ -136,7 +145,7 @@ angular.module('infographicApp')
             return 'playstation';
           }
           else {
-            return undefined;
+            return;
           }
 
         }
@@ -169,9 +178,7 @@ angular.module('infographicApp')
         //TODO: make the position of the selected card to be underneath the mouse cursor.
 
         // scope versus test testing...
-        // console.log( "parent link: ", controller, controller.test );
-
-        console.log( "viz", visCtrl );
+        // console.log( "viz", visCtrl );
 
         // TODO: either move this event back into the card IF pointer-events: none; is not cross platform enough
 
@@ -339,9 +346,12 @@ angular.module('infographicApp')
             return;
           }
 
-          // update variables for positioning
-          scope.maxCardHeight = scope.$parent.getDeviceProperty('pxHeight','max');
           scope.numCards = scope.$parent.countDevices();
+
+          // update variables for positioning
+          scope.cardScale = scope.numCards < 60 ? scope.SCALE_LARGER : scope.SCALE_SMALLER;
+
+          scope.maxCardHeight = scope.$parent.getDeviceProperty('pxHeight','max');
 
           // update dom bindings
           scope.visHeight = visCtrl.getScaledUnit( scope.maxCardHeight ) + scope.cardTopMargin;

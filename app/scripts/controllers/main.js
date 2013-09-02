@@ -13,45 +13,48 @@ angular.module('infographicApp')
     $scope.highestResolutionDevices = {};
     $scope.mostCommonResolutionDevices = {};
 
-    // $scope.highlightedOs = []; // default to none
-    $scope.highlightedOs = [ 'ios', 'android', 'blackberry', 'windows', 'webos', 'playstation' ]; //default to all
-
     $scope.filters = [
       { 
         id: 'ios', 
         imgSrc: 'images/ios.svg', 
         altAttr: 'Apple logo', 
-        titleAttr: 'Highlight iOS devices'
+        titleAttr: 'Highlight iOS devices',
+        highlighted: true
       },
       { 
         id: 'android', 
         imgSrc: 'images/android.svg', 
         altAttr: 'Android logo', 
-        titleAttr: 'Highlight Android devices'
+        titleAttr: 'Highlight Android devices',
+        highlighted: true
       },
       { 
         id: 'blackberry', 
         imgSrc: 'images/blackberry.svg', 
         altAttr: 'BlackBerry logo', 
-        titleAttr: 'Highlight BlackBerry devices'
+        titleAttr: 'Highlight BlackBerry devices',
+        highlighted: true
       },
       { 
         id: 'windows', 
         imgSrc: 'images/windows.svg', 
         altAttr: 'Windows Phone logo', 
-        titleAttr: 'Highlight Windows Phone devices'
+        titleAttr: 'Highlight Windows Phone devices',
+        highlighted: true
       },
       { 
         id: 'webos', 
         imgSrc: 'images/webos.svg', 
         altAttr: 'webOS logo', 
-        titleAttr: 'Highlight webOS devices'
+        titleAttr: 'Highlight webOS devices',
+        highlighted: true
       },
       { 
         id: 'playstation', 
         imgSrc: 'images/playstation.svg', 
         altAttr: 'PlayStation logo', 
-        titleAttr: 'Highlight PlayStation devices'
+        titleAttr: 'Highlight PlayStation devices',
+        highlighted: true
       }
     ];
 
@@ -105,6 +108,7 @@ angular.module('infographicApp')
 
     $scope.sortByWidth = function( array ) {
       // sort by width, descending in size so bigger sizes show up in the "back"
+      // TODO: this doesn't do a 2-d sort though since there could be two devices with same width/height
       array.sort(function(a,b){
         if (a.pxWidth > b.pxWidth)
           return -1;
@@ -225,30 +229,19 @@ angular.module('infographicApp')
     //   console.log(date);
     // };
 
-    //TODO: add a deselect in
+    $scope.toggleDeviceHighlight = function(os) {
 
-    $scope.highlightDevices = function(os) {
-
-      console.log( os );
-      if (!os) return;
-
-      var i = _.indexOf( $scope.highlightedOs, os );
-      if ( i === -1 ) {
-        $scope.highlightedOs.push( os ); //add
+      if ( !os ) {
+        return;
       }
-      else {
-        $scope.highlightedOs.splice( i, 1 ); //remove
-      }
-      console.log( "$scope.highlightedOs: ", i, $scope.highlightedOs );
-      $scope.$broadcast('EVENT_OS_HIGHLIGHT_CHANGE', $scope.highlightedOs );
 
-    }
+      // toggle current state
+      var filter = _.find( $scope.filters, function(filter){ return filter.id === os } );
+      filter.highlighted = !filter.highlighted; 
 
-    $scope.checkIfHighlighted = function(os) {
-      var found = _.find( $scope.highlightedOs, function(highlight){
-        return highlight.indexOf( os ) > -1;
-      });
-      return ( found ? true : false );
+      // broadcast so resolution-card can react to it
+      $scope.$broadcast('EVENT_' + os.toUpperCase() + '_HIGHLIGHT_CHANGE', filter );
+
     }
 
   });

@@ -17,11 +17,15 @@ angular.module('infographicApp')
                 '  >' +
                 '  <div class="resolution-title">' + 
                 '    {{device.pxWidth}}' +
-                '    <span class="res-divider" ng-class="{ multiline:multilineResolution }">x</span>' + 
+                '    <span class="res-divider" ng-class="{ multiline:multilineResolution }" >' +
+                '      x' +
+                '    </span>' + 
                 '    {{device.pxHeight}}' +
-                '    <span class="count" ng-show="device.count">({{device.count}})</span>' +
+                '    <span ng-show="device.count" class="count" ng-class="{ multiline:multilineResolution }" >' +
+                '      ({{device.count}})' +
+                '    </span>' +
                 '  </div>' + 
-                '  <div class="device-names">{{getDeviceName()}}</div>' + 
+                '  <div class="device-names">{{deviceDisplayName}}</div>' + 
                 '</div>',
       controller: function( $scope, $element, $attrs ) {
 
@@ -35,17 +39,8 @@ angular.module('infographicApp')
         $scope.cardStyle;
 
         // card labels
+        $scope.deviceDisplayName = '';
         $scope.multilineResolution = false;
-
-        $scope.updateHighlight = function( highlightedOs ) {
-          var highlightedOs = highlightedOs || $scope.$parent.highlightedOs;
-          var i = _.indexOf( highlightedOs, $scope.deviceOsClass );
-          $scope.isHighlighted = ( i === -1 ) ? false : true;
-        }
-
-        $scope.getDeviceName = function() {
-          return $scope.device.deviceAlias || $scope.device.deviceName;
-        };
 
       },
       link: function ( scope, element, attrs, visCtrl ) {
@@ -81,26 +76,48 @@ angular.module('infographicApp')
             scope.cardStyle.opacity = 1;
           }, scope.offset * animationDelay );
           
+          // update label
+          scope.deviceDisplayName = scope.device.deviceAlias || scope.device.deviceName;
+
           // in the case where the resolution is small (width-wise),
           // break card label onto two lines:
-          if ( scope.device.height >= 320 && title.height() > 15 ) {
-            $scope.multilineResolution = true;
+          // var title = $('.resolution-title'); // trying to avoid DOM lookup
+          if ( scope.device.pxWidth < 360 ) {
+            scope.multilineResolution = scope.device.pxHeight < 320 ? false : true;
+          }else{
+            scope.multilineResolution = false;
           }
 
           // update classes:
-          scope.deviceOsClass = visCtrl.getSimpleOsName( scope.device.os );
           scope.isPhone = scope.device.isPhone;
           scope.isTablet = !scope.device.isPhone;
-          scope.updateHighlight(); // pass null to update highlight using filters set in $parent
+
+          scope.deviceOsClass = visCtrl.getSimpleOsName( scope.device.os );
+
+          if ( scope.deviceOsClass ) {
+            var filter = _.find( scope.$parent.filters, function(filter){ return filter.id === scope.deviceOsClass } );
+            scope.isHighlighted = filter.highlighted; 
+          }
 
         });
 
         // listen for changes in the device OS highlight filter in main.js:
-        // TODO: What would be more efficient permformance-wise?
-        // Broadcasting a single event from main controller and looping thorugh the array here?
-        // Or broadcasting several events and no looping here? e.g. EVENT_ANDROID_HIGHLIGHT_CHANGE
-        scope.$on('EVENT_OS_HIGHLIGHT_CHANGE', function(event, args){
-          scope.updateHighlight(args);
+        scope.$watch('deviceOsClass',function(){
+          
+          if ( !scope.deviceOsClass ) {
+            return;
+          } 
+
+          scope.$on('EVENT_' + scope.deviceOsClass.toUpperCase() + '_HIGHLIGHT_CHANGE', function(event, filter){
+            scope.isHighlighted = filter.highlighted;
+          });
+
+        });
+
+        // when switching views...
+        scope.$on('$destroy', function() {
+          console.log("destroy");
+          // TODO: remove listeners
         });
 
       }
