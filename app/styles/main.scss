@@ -1,0 +1,173 @@
+@import "compass/css3/";
+@import "compass/utilities";
+@import "compass/css3/user-interface";
+
+
+@import "colors";
+
+* {
+  @include box-sizing("border-box");
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: white;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #595859;
+  font-size: 100%;
+}
+
+.container {
+  margin: 10px auto;
+  max-width: 1068px;
+  padding: 0 14px;
+}
+
+p {
+  line-height: 1.4em;
+}
+
+h1 {
+  color: #333;
+  font-size: 27px;
+  line-height: 27px;
+  margin-top: 1.5em;
+  margin-bottom: 0.6em;
+}
+
+h2 {
+  color: #333;
+  text-transform: uppercase;
+  font-size: 17px;
+  line-height: 17px;
+  padding-top: 12px;
+  margin-bottom: -6px;
+}
+
+a {
+  color: #66cc00;
+  &:hover {
+    color: #8be234;
+  }
+}
+
+// sup {
+  // vertical-align: text-top;
+  a {
+    text-decoration: none;
+    cursor: pointer;
+  }
+// }
+
+ul {
+  // margin-left: 0;
+  // padding-left: 0;
+  list-style: none;
+  font-size: 16px;
+  line-height: 20px;
+
+  li {
+    margin: 0.4em 0em;
+  }
+
+  ul {
+    // margin-left: 16px;
+    // padding-left: 12px;
+    list-style: disc;
+  }
+  
+}
+
+.vis-holder {
+  // outline: 1px dashed red; //debug
+  overflow-y: hidden;
+  overflow-x: hidden;
+  // overflow-x: scroll;
+  // display: inline-block;
+  min-height: 300px; // will jump after json loaded
+  padding-top: 40px; // extra padding for bounce ease effect on cards
+  padding-bottom: 2px;
+  // margin-bottom: 5px; // add margin-bottom due to box-shadow
+  // border-bottom: 5px solid #e2e2e2;
+  // @include box-shadow(0px 5px 0px #e2e2e2);
+  @include user-select(none);
+}
+
+@import "resolution-vis";
+@import "resolution-card";
+@import "tooltip";
+
+.footnote {
+  font-size: smaller;
+}
+
+fieldset {
+  border: none;
+  padding: 0;
+  overflow: auto;
+  // background-color: #e2e2e2;
+  padding: 10px 0px;
+  margin-top: -5px;
+  legend {
+    text-transform: uppercase;
+    font-size: 14px;
+    font-weight: bold;
+    float: left;
+    margin-right: 10px;
+  }
+  & > div {
+    float: left;
+    font-size: 15px;
+    margin-top: -2px;
+    margin-right: 5px;
+  }
+  input, label {
+    display: inline-block;
+    vertical-align: middle;
+  }
+  input {
+    margin-right: 2px;
+    margin-left: 10px;
+    &:first-child {
+      margin-left: 0;
+    }
+  }
+  img.device-highlighter {
+    vertical-align: middle;
+    cursor: pointer;
+    padding: 2px 0;
+    border-bottom: 2px solid #fff;
+    margin-right: 8px;
+    &.selected {
+      &.ios {
+        border-color: $ios;
+      }
+      &.android {
+        border-color: $android;
+      }
+      &.blackberry {
+        border-color: $blackberry;
+      }
+      &.windows {
+        border-color: $windows;
+      }
+      &.webos {
+        border-color: $webos;
+      }
+      &.playstation {
+        border-color: $playstation;
+      }
+    }
+    &:last-of-type {
+      margin-right: 15px;
+    }
+  }
+}
+
+footer {
+  margin-top: 80px;
+  text-align: center;
+  font-size: 11px;
+  line-height: 16px;
+}

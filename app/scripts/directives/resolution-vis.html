@@ -1,0 +1,18 @@
+<div class="resolution-vis" style="width:{{visWidth}}px;height:{{visHeight}}px;">
+  <div id="tooltip" class="tooltip">
+    <p>{{tooltipDevice.deviceAlias && tooltipDevice.deviceAlias || tooltipDevice.deviceName}}</p> 
+    <h3>{{tooltipDevice.pxWidth}} x {{tooltipDevice.pxHeight}}:</h3>
+  </div> 
+  <div>
+    <telus-resolution-card ng-repeat="device in mobileDevices" device="device" order="$index" />
+  </div>
+</div>
+<fieldset>
+  <legend>
+    Displaying the top {{ countDevices() }} {{ displayGrouped && 'resolutions' || 'mobile devices' }}
+  </legend>
+  <div>
+    <input type="radio" ng-model="displayGrouped" ng-value="false" ng-change="updateVis()" /><label for="all">Show all devices</label>
+    <input type="radio" ng-model="displayGrouped" ng-value="true" ng-change="updateVis()" /><label for="grouped">Group devices by resolution</label>
+  </div>
+</fieldset>

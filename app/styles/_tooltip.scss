@@ -1,0 +1,45 @@
+#tooltip {
+  position: absolute;
+  display: block;
+  max-width: 220px;
+  min-width: 160px;
+  left: 0;
+  top: 0;
+  z-index: 1000;
+  display: none;
+  &.show {
+    display: inline-block;
+  }
+}
+
+.tooltip {
+  border: 1px solid #ccc;
+  padding: 10px 14px;
+  background-color: #fff;
+  // @include single-box-shadow( darken(#f0f0f0, 25%), 0, 0, 15px, -5px, true );
+  @include box-shadow( darken(#f0f0f0, 25%) 0 0 15px -5px inset, #d0d0d0 3px 3px 0px  );
+
+  // box-shadow: 3px 3px 0px #d0d0d0;
+
+  h3 {
+    // outline: 1px solid red; //debug
+    font-size: 14px;
+    margin: 0 0 8px 0;
+    padding: 0;
+  }
+
+  p {
+    // outline: 1px solid green; //debug
+    font-size: 12px;
+    line-height: 1.5em;
+    margin: 0;
+    padding: 0;
+    img {
+      vertical-align: text-top;
+    }
+  }
+
+  // img {
+  // }
+
+}

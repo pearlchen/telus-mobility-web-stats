@@ -1,0 +1,113 @@
+.resolution-card {
+  overflow: hidden;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 5px 10px;
+  text-align: center;
+  font-size: 13px;
+  color: darken(#f0f0f0, 35%);
+  background-color: #fafafa;
+  border: 1px solid darken(#fafafa, 25%);
+  @include border-radius(3px);
+  // @include single-box-shadow( darken(#f0f0f0, 15%), 0, 0, 30px, -10px, true );
+  @include transition(left 150ms ease, top 500ms cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 100ms ease, background-color 300ms ease );
+  
+  .resolution-title {
+    pointer-events: none;
+    margin-bottom: 3px;
+  }
+
+  .res-divider {
+    display: inline;
+    &.multiline {
+      display: block;
+    }
+  }
+
+  .count {
+    opacity: 0.6;
+    &.multiline {
+      display: block;
+    }
+  }
+
+  @mixin highlight-color-combo( $seed-color ) {
+    background-color: $seed-color;
+    border-color: darken( $seed-color, 10% );
+    color: darken( $seed-color, 30% );
+    &:hover {
+      border-color: darken( $seed-color, 14% );
+    }
+  }
+
+  &.highlight {
+    // @include highlight-color-combo( #fff );
+    &.ios {
+      @include highlight-color-combo( $ios );
+    }
+    &.android {
+      @include highlight-color-combo( $android );
+    }
+    &.blackberry {
+      @include highlight-color-combo( $blackberry );
+    }
+    &.windows {
+      @include highlight-color-combo( $windows );
+    }
+    &.webos {
+      @include highlight-color-combo( $webos );
+    }
+    &.playstation {
+      @include highlight-color-combo( $playstation );
+    }
+
+  }
+
+  &:hover {
+    border-width: 2px;
+  }
+
+  &:hover:not(.highlight) {
+    background-color: darken(#fafafa, 2%);
+  }
+
+  &.selected {
+    border-width: 2px;    
+    .device-names {
+      display: block;
+      @include user-select(text);
+    }
+  }
+
+  &.selected:not(.highlight) {
+    color: #333;
+    background-color: darken(#fafafa, 4%); //#f0f0f0;
+  }
+
+  .device-names {
+    display: none;
+    font-size: 10px;
+    line-height: 1.4em;
+    pointer-events: none;
+  }
+
+  // &.phone {
+  //   // green
+  //   color: #408000;
+  //   border: 1px solid #66cc00;
+  //   &:hover {
+  //     background-color: lighten( #66cc00, 20% );
+  //   }
+  // }
+  // &.tablet {
+  //   // purple
+  //   color: #49166d;
+  //   border: 1px solid #8c68a6;
+  //   &:hover {
+  //     background-color: lighten( #8c68a6, 20% );
+  //   }
+  // }
+  
+}
