@@ -52,13 +52,13 @@ a {
   }
 }
 
-sup {
-  vertical-align: text-top;
+// sup {
+  // vertical-align: text-top;
   a {
     text-decoration: none;
     cursor: pointer;
   }
-}
+// }
 
 ul {
   // margin-left: 0;
@@ -127,7 +127,11 @@ fieldset {
     vertical-align: middle;
   }
   input {
-    margin-right: 5px;
+    margin-right: 2px;
+    margin-left: 10px;
+    &:first-child {
+      margin-left: 0;
+    }
   }
   img.device-highlighter {
     vertical-align: middle;

@@ -1,5 +1,5 @@
 <div class="vis-holder">
-  <telus-resolution-vis highlightedOs=highlightedOs />
+  <telus-resolution-vis></telus-resolution-vis>
 </div>
 
 <fieldset>
@@ -10,7 +10,10 @@
 
   <div>
 
-    <input type="radio" ng-model="displayGrouped" ng-value="false" ng-change="updateVis()" />
+    <input type="radio" ng-model="displayGrouped" ng-value="true" ng-change="updateVis()" />
+    <label for="grouped">Group devices by resolution</label>
+
+    <input type="radio" ng-model="displayGrouped" ng-value="false" ng-change="updateVis()" />    
     <label for="all">Show all devices</label>
     <img ng-repeat="filter in filters" ng-src="{{filter.imgSrc}}" alt="{{filter.altAttr}}"
       title="{{filter.titleAttr}}"
@@ -20,14 +23,11 @@
       class="device-highlighter {{filter.id}}" 
       ng-class="{'selected': filter.highlighted}" />
     
-    <input type="radio" ng-model="displayGrouped" ng-value="true" ng-change="updateVis()" />
-    <label for="grouped">Group devices by resolution</label>
-
   </div>
 </fieldset>
 
 <h1>A look into some of the screens visiting TELUS in July 2013</h1>
-<p>As a companion to the post I wrote for the <a href="http://web.telus.com/blog/" target="_blank">TELUS Digital Labs blog</a> on designing responsively, I thought that I would dig into <strong>real</strong> stats from TELUS' web analytics and find out who (or rather, what) has been looking at our site. Have fun exploring the interactive<sup><a title="Sorry, infographic does not support mobile devices at the moment. Ironic, I know." ng-click="scrollToFootnotes()">*</a></sup> infographic above.</p>
+<p>As a companion to the post I wrote for the <a href="http://web.telus.com/blog/" target="_blank">TELUS Digital Labs blog</a> on designing responsively, I thought that I would dig into <strong>real</strong> stats from TELUS' web analytics and find out who (or rather, what) has been looking at our site. Have fun exploring the interactive <a title="Sorry, infographic does not support mobile devices at the moment. Ironic, I know.">*</a> infographic above.</p>
 
 <p>Some interesting stats highlighted below:</p>
 
@@ -54,25 +54,25 @@
 <h2>Screen resolution ranges</h2>
 <ul>
   <li>
-    In the top 100, there were <strong>{{mobileDevicesGroupedLength}} <em>unique</em> screen resolutions</strong>:
+    In the top 100, there were <strong>{{mobileDevicesFlatGroup.length}} <em>unique</em> screen resolutions</strong>:
     <ul>
       <li>
         Widths ranged from <strong>{{getDeviceProperty('pxWidth','min')}}px to {{getDeviceProperty('pxWidth','max')}}px</strong> and heights from <strong>{{getDeviceProperty('pxHeight','min')}}px to {{getDeviceProperty('pxHeight','max')}}px</strong>
       </li>
-      <li>
+      <!-- <li>
         The <strong>smallest</strong> resolution device?
         <br />
         The {{getDeviceNamesinArray('smallestResolutionDevices')}} with a screen resolution of {{smallestResolutionDevices[0].pxWidth}}px by {{smallestResolutionDevices[0].pxHeight}}px.
-      </li>
-      <li>
+      </li> -->
+      <!-- <li>
         The <strong>largest</strong> resolution device?
         <br />
         The {{getDeviceNamesinArray('highestResolutionDevices')}} with a screen resolution of {{highestResolutionDevices[0].pxWidth}}px by {{highestResolutionDevices[0].pxHeight}}px
-      </li>
+      </li> -->
       <li>
         The <strong>most common</strong> resolution?
         <br />
-        {{mostCommonResolutionDevices.pxWidth}}px by {{mostCommonResolutionDevices.pxHeight}}px (which was shared by {{mostCommonResolutionDevices.count}} different devices)
+        <strong>{{mostCommonResolutionDevices.pxWidth}}px by {{mostCommonResolutionDevices.pxHeight}}px</strong> (which was shared by {{mostCommonResolutionDevices.count}} different devices)
       </li>
     </ul>
   </li>

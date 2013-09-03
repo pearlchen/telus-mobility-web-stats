@@ -31,8 +31,12 @@
   p {
     // outline: 1px solid green; //debug
     font-size: 12px;
+    line-height: 1.5em;
     margin: 0;
     padding: 0;
+    img {
+      vertical-align: text-top;
+    }
   }
 
   // img {

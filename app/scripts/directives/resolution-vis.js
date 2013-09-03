@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('infographicApp')
-  .directive('telusResolutionVis', function(){
+  .directive('telusResolutionVis', function($filter){
     return {
       restrict: 'E', // usage: <telus-resolution-vis></telus-resolution-vis>
       replace: true,
@@ -9,8 +9,9 @@ angular.module('infographicApp')
                 '  <div id="tooltip" class="tooltip">' +
                 '    <h3>{{tooltipDevice.pxWidth}}px by {{tooltipDevice.pxHeight}}px</h3>' +
                 '    <p>' +
-                '      <span ng-bind-html-unsafe="getIcon(tooltipDevice)"> ::{{getIcon(tooltipDevice)}}</span>' +
-                '      {{tooltipDevice.deviceAlias && tooltipDevice.deviceAlias || tooltipDevice.deviceName}}</p>' + 
+                // '      <span ng-bind-html-unsafe="getIcon(tooltipDevice)"> ::{{getIcon(tooltipDevice)}}</span>' +
+                '      <span ng-bind-html-unsafe="tooltipDeviceDisplayName"></span>' +
+                '    </p>' + 
                 '  </div>' + 
                 '  <div>' +
                 '    <telus-resolution-card ng-repeat="device in mobileDevices" device="device" order="$index" offset="numCards-$index">' +
@@ -19,6 +20,8 @@ angular.module('infographicApp')
                 '</div>',
       scope: true,
       controller: function( $scope ) {
+
+        $scope.predicate = '-pxWidth';
 
         // these 2 properties rely on $scope.mobileDevices
         $scope.numCards = 0;      // = scope.$parent.countDevices();
@@ -29,11 +32,11 @@ angular.module('infographicApp')
         $scope.visWidth = 0;
 
         $scope.SCALE_SMALLER = 0.2;
-        $scope.SCALE_LARGER = 0.25;
+        $scope.SCALE_LARGER = 0.22;
         $scope.cardScale = $scope.SCALE_SMALLER;
 
         $scope.marginTight = 5;
-        $scope.marginRoomy = 10;
+        $scope.marginRoomy = 15;
         $scope.cardLeftMargin = $scope.marginTight;
 
         $scope.cardTopMargin = 0;
@@ -46,8 +49,9 @@ angular.module('infographicApp')
 
         // tooltip
         $scope.showTooltip = false;
-        $scope.tooltipDevice; // = { pxWidth: 0, pxHeight: 0, deviceName: '' };
         $scope.visOffset = { left: 0, top: 0 };
+        $scope.tooltipDevice; // = { pxWidth: 0, pxHeight: 0, deviceName: '' };
+        $scope.tooltipDeviceDisplayName;
 
         this.getScaledUnit = function( pixels ) {
           return Math.round( pixels * $scope.cardScale );
@@ -102,14 +106,15 @@ angular.module('infographicApp')
           // tooltip anchored to top left
           var x = ( mouseX || 0 ) - $scope.visOffset.left,
               y = ( mouseY || 0 ) - $scope.visOffset.top,
-              pad = 10,
-              proposedX = x + pad,
-              proposedY = y + pad;
+              offsetX = 20,
+              offsetY = 0,
+              proposedX = x + offsetX,
+              proposedY = y + offsetY;
           
           // but if the tooltip is going to go offscreen on the right, flip to being on the left
           // and if the tooltip is going to go offscreen on the bottom, flip to being on top
-          x = ( proposedX + w < $scope.visWidth ) ? ( proposedX ) : ( x - w - pad ); 
-          y = ( proposedY + h < $scope.visHeight ) ? ( proposedY ) : ( y - h - pad ); 
+          x = ( proposedX + w < $scope.visWidth ) ? ( proposedX ) : ( x - w - offsetX ); 
+          y = ( proposedY + h < $scope.visHeight ) ? ( proposedY ) : ( y - h - offsetY ); 
 
           tooltip.addClass('show').css({ left: x, top: y });
 
@@ -154,10 +159,10 @@ angular.module('infographicApp')
       },
       link: function ( scope, element, attrs, visCtrl ) {
 
-        scope.getIcon = function(device) {
+        scope.getIcon = function(deviceOs) {
 
-          if ( device && device.os ) {
-            var os =  visCtrl.getSimpleOsName( device.os );
+          if ( deviceOs ) {
+            var os =  visCtrl.getSimpleOsName( deviceOs );
             if ( os !== '' ){
               return '<img src="images/' + os + '.svg" width="12" height="12" alt="" />';
             }
@@ -182,23 +187,35 @@ angular.module('infographicApp')
 
         // TODO: either move this event back into the card IF pointer-events: none; is not cross platform enough
 
+        scope.updateTooltip = function( device ){
+
+          if ( !device ) {
+            return;
+          }
+
+          // update tooltip label
+          if ( device.deviceName instanceof Array ) {
+            var names = _.map( device.deviceName, function(name,i) {
+              return scope.getIcon(device.os[i]) + ' ' + name;
+            });
+            scope.tooltipDeviceDisplayName = names.join("<br />");
+          }
+          else {
+            scope.tooltipDeviceDisplayName = scope.getIcon(device.os) + ' ' + ( device.deviceAlias || device.deviceName );
+          }
+
+          scope.$apply(function(){
+            scope.tooltipDevice = device;
+          });
+
+        };
+
         scope.visOffset = { left: element.offset().left, 
                             top: element.offset().top };
 
-        element.on('click', '.resolution-card', function(event){
 
-          // store event target
-          var selectedCard = event.target;
-          // var selectedOrder = angular.element(selectedCard).scope().order;
 
-          // if ( scope.selectedCard && scope.selectedCard.length > 0 ) {
-          //   console.log( selectedOrder, " === ", scope.selectedOrder );
-          //   if ( scope.selectedOrder && selectedOrder === scope.selectedOrder ) {
-          //     console.log( "same" );
-          //     scope.resetSelectedCard();
-          //     return;
-          //   }
-          // }
+        scope.positionCards = function( selectedCard ) {
 
           // reset all the other card positions
           scope.selectedCard = scope.resetSelectedCard( $(selectedCard) ).addClass("selected");
@@ -224,29 +241,43 @@ angular.module('infographicApp')
 
           // move all cards behind selected card
           var shiftFollowingLeft = shiftLeft + selectedCard.offsetWidth;
-          var followingCards = $(event.target).prevUntil(event.target);
+          var followingCards = $(selectedCard).prevUntil(selectedCard);
           followingCards.each(function( i, card ){
             // $(card).css('left', shiftLeft + ( (i+1) * scope.cardLeftMargin) );
             var cardOffset = (i+1) * scope.cardLeftMargin;
             $(card).css('left', shiftFollowingLeft + cardOffset );
           });
 
-          // update tooltip
-          var device = angular.element(event.target).scope().device;
-          scope.$apply(function(){
-            scope.tooltipDevice = device;
-          });
+        }
+
+        element.on('click', '.resolution-card', function(event){
+
+          // store event target
+          var selectedCard = event.target;
+
+          scope.hideToolTip();
+
+          // check if card is already selected and open
+          if ( scope.selectedCard && scope.selectedCard.length > 0 ) {
+            var selectedOrder = angular.element(selectedCard).scope().order;
+            if ( scope.selectedOrder && scope.selectedOrder === selectedOrder) {
+              // if so, close it
+              scope.resetSelectedCard();
+              return;
+            }
+          }
+
+          // animate cards
+          scope.positionCards( selectedCard );
 
           // show tooltip and update position based on mouse
-          scope.positionToolTip( event.pageX, event.pageY );
+          // scope.updateTooltip( angular.element(event.target).scope().device );
+          // scope.positionToolTip( event.pageX, event.pageY );
 
         });
 
         element.on('mouseenter', '.resolution-card', function(event){
-          var device = angular.element(event.target).scope().device;
-          scope.$apply(function(){
-            scope.tooltipDevice = device;
-          });
+          scope.updateTooltip( angular.element(event.target).scope().device );
         });
 
         // update position of tooltip
@@ -291,7 +322,10 @@ angular.module('infographicApp')
               var oldCard = $(scope.selectedCard);
               oldCard.css({cursor:'none'});
               scope.resetSelectedCard( card );
-              $(card).trigger('click');
+
+              // $(card).trigger('click');
+              scope.positionCards( card );
+
               oldCard.css({cursor:'pointer'});
             }
           }

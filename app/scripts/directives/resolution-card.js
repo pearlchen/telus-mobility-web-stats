@@ -25,7 +25,7 @@ angular.module('infographicApp')
                 '      ({{device.count}})' +
                 '    </span>' +
                 '  </div>' + 
-                '  <div class="device-names">{{deviceDisplayName}}</div>' + 
+                // '  <div class="device-names"><span ng-bind-html-unsafe="deviceDisplayName"></span></div>' + 
                 '</div>',
       controller: function( $scope, $element, $attrs ) {
 
@@ -42,6 +42,15 @@ angular.module('infographicApp')
         $scope.deviceDisplayName = '';
         $scope.multilineResolution = false;
 
+        $scope.shadeColor = function(color, percent) {   
+          var num = parseInt(color,16),
+          amt = Math.round(2.55 * percent),
+          R = (num >> 16) + amt,
+          B = (num >> 8 & 0x00FF) + amt,
+          G = (num & 0x0000FF) + amt;
+          return (0x1000000 + (R<255?R<1?0:R:255)*0x10000 + (B<255?B<1?0:B:255)*0x100 + (G<255?G<1?0:G:255)).toString(16).slice(1);
+        }
+
       },
       link: function ( scope, element, attrs, visCtrl ) {
 
@@ -52,7 +61,10 @@ angular.module('infographicApp')
 
         // wrap in $watch since the model changes in main.js and this directive is also part of a ng-repeat
         // TODO: verify the above comment...
-        scope.$watch('device', function() {
+
+        var highlightWatcher;
+
+        var deviceWatcher = scope.$watch('device', function() {
 
           // update css style based on device specs:
           var defaultTop = visCtrl.getVisHeight(),
@@ -68,6 +80,14 @@ angular.module('infographicApp')
                               opacity: 0 // invisible to start, animated in in $timeout()
                             }
 
+          if ( scope.$parent.displayGrouped ) {
+            var targetOpacity = scope.device.count / scope.$parent.countDevices() * 15;
+            var seedColor = scope.shadeColor( "8FCBE3", -targetOpacity );
+            scope.cardStyle.backgroundColor = "#" + seedColor;
+            scope.cardStyle.borderColor = "#" + scope.shadeColor( seedColor, -10 ); // -10 to make CSS/SASS color combo
+            scope.cardStyle.color = "#" + scope.shadeColor( seedColor, -30 ); // -30 to make CSS/SASS color combo
+          }
+
           // create staggered css animation:
           var animationDelay = 30; //30 seems just quick enough but not too quick...
 
@@ -77,13 +97,18 @@ angular.module('infographicApp')
           }, scope.offset * animationDelay );
           
           // update label
-          scope.deviceDisplayName = scope.device.deviceAlias || scope.device.deviceName;
+          if ( scope.device.deviceName instanceof Array ) {
+            scope.deviceDisplayName = scope.device.deviceName.join("<br />");
+          }
+          else {
+            scope.deviceDisplayName = scope.device.deviceAlias || scope.device.deviceName;
+          }
 
           // in the case where the resolution is small (width-wise),
           // break card label onto two lines:
           // var title = $('.resolution-title'); // trying to avoid DOM lookup
           if ( scope.device.pxWidth < 360 ) {
-            scope.multilineResolution = scope.device.pxHeight < 320 ? false : true;
+            scope.multilineResolution = scope.device.pxHeight <= 320 ? false : true;
           }else{
             scope.multilineResolution = false;
           }
@@ -92,32 +117,34 @@ angular.module('infographicApp')
           scope.isPhone = scope.device.isPhone;
           scope.isTablet = !scope.device.isPhone;
 
-          scope.deviceOsClass = visCtrl.getSimpleOsName( scope.device.os );
+          if ( scope.device.os instanceof Array ) {
+            // hmm, anything to do here?
+          }
+          else{
+            scope.deviceOsClass = visCtrl.getSimpleOsName( scope.device.os );
+          }
 
           if ( scope.deviceOsClass ) {
+
+            // initialize highlighted state
             var filter = _.find( scope.$parent.filters, function(filter){ return filter.id === scope.deviceOsClass } );
             scope.isHighlighted = filter.highlighted; 
+
+            // listen for further changes
+            highlightWatcher = scope.$on('EVENT_' + scope.deviceOsClass.toUpperCase() + '_HIGHLIGHT_CHANGE', function(event, filter){
+              scope.isHighlighted = filter.highlighted;
+            });
+
           }
 
         });
 
-        // listen for changes in the device OS highlight filter in main.js:
-        scope.$watch('deviceOsClass',function(){
-          
-          if ( !scope.deviceOsClass ) {
-            return;
-          } 
-
-          scope.$on('EVENT_' + scope.deviceOsClass.toUpperCase() + '_HIGHLIGHT_CHANGE', function(event, filter){
-            scope.isHighlighted = filter.highlighted;
-          });
-
-        });
-
-        // when switching views...
+        // when switching views, clean up by removing listeners
         scope.$on('$destroy', function() {
-          console.log("destroy");
-          // TODO: remove listeners
+          deviceWatcher();
+          if ( highlightWatcher ) {
+            highlightWatcher();
+          }
         });
 
       }
