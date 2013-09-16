@@ -7,6 +7,14 @@ angular.module('infographicApp', [])
         templateUrl: 'views/main.html',
         controller: 'MainCtrl'
       })
+      .when('/en/', {
+        templateUrl: 'views/main.html',
+        controller: 'MainCtrl'
+      })
+      .when('/fr/', {
+        templateUrl: 'views/main-fr.html',
+        controller: 'MainCtrl'
+      })
       .otherwise({
         redirectTo: '/'
       });
