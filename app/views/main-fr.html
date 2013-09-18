@@ -1,0 +1,79 @@
+<div id="lang">
+  <a href="#/en">EN</a>
+</div>
+
+<div class="vis-holder">
+  <telus-resolution-vis></telus-resolution-vis>
+</div>
+
+<fieldset>
+
+  <legend>
+    Les {{ countDevices() }} {{ displayGrouped && 'résolutions d’écran les plus populaires' || 'appareils mobiles les plus populaires' }}
+  </legend>
+
+  <div>
+
+    <input type="radio" ng-model="displayGrouped" ng-value="true" ng-change="updateVis()" />
+    <label for="grouped">Regrouper les appareils selon leur résolution d’écran </label>
+
+    <input type="radio" ng-model="displayGrouped" ng-value="false" ng-change="updateVis()" />    
+    <label for="all">Afficher tous les appareils</label>
+    <img ng-repeat="filter in filters" ng-src="{{filter.imgSrc}}" alt="{{filter.altAttr}}"
+      title="{{filter.titleAttr}}"
+      height="20" width="20" 
+      ng-click="toggleDeviceHighlight(filter.id)"
+      ng-show="!displayGrouped"
+      class="device-highlighter {{filter.id}}" 
+      ng-class="{'selected': filter.highlighted}" />
+    
+  </div>
+</fieldset>
+
+<h1>Un aperçu des appareils utilisés pour visiter le site de TELUS au cours du mois de juillet 2013</h1>
+<p>Pour faire suite à l’article que j’ai publié dans le <a href="http://web.telus.com/blog/" target="_blank">blogue des Studios numériques TELUS</a> à propos du design adaptatif, j’ai pensé qu’il serait intéressant d’éplucher les données d’analytique Web de TELUS afin de découvrir l’identité (ou plutôt la nature) de nos visiteurs. Amusez-vous à consulter la maquette interactive<a title="Désolé, l’infographie n’est pas prise en charge sur les appareils mobiles pour le moment. C’est ironique, je sais.">*</a> ci-dessus.</p>
+
+<p>Voici certaines statistiques intéressantes :</p>
+
+<h2>APPAREILS MOBILES ET ORDINATEURS DE BUREAU</h2>
+<ul>
+  <li>
+    <strong>20 %</strong> des pages vues sur le site <a href="http://telusmobilite.com" target="_blank">telusmobilite.com</a> sont attribuables aux appareils mobiles.
+    <ul>
+      <li>Il s’agit d’une augmentation de 6 % par rapport à 2012 et de 12 % par rapport à 2011.</li>
+      <li>En supposant une augmentation de 6 % par année, l’achalandage du site pourrait-il se composer à 50 % d’appareils mobiles d’ici 2018, ou même avant ?</li>
+    </ul>
+  </li>
+</ul>
+<h2>RÉSOLUTIONS D’ÉCRAN : UNE DISTRIBUTION ÉVASÉE</h2>
+<ul>
+  <li>Les quelque <strong>8 millions de pages vues</strong> proviennent de <strong>1532</strong> modèles d’appareils <strong>distincts</strong>.
+    <ul>
+      <li><strong>97,5 %</strong> de ces pages vues sont attribuables à aussi peu que <strong>99</strong> modèles d’appareils.</li>
+      <li>Le reste de cette distribution pour le moins évasée se compose des <strong>1433</strong> autres modèles d’appareils.</li>
+    </ul>
+  </li>
+</ul>
+
+<h2>RÉPARTITION DES RÉSOLUTIONS D’ÉCRAN</h2>
+<ul>
+  <li>
+    Parmi les 100 appareils les plus populaires, on retrouvait <strong>{{mobileDevicesFlatGroup.length}} résolutions d’écran <em>distinctes</em> </strong>:
+    <ul>
+      <li>
+        Les largeurs allaient de <strong>{{getDeviceProperty('pxWidth','min')}}px à {{getDeviceProperty('pxWidth','max')}}px</strong> et les hauteurs de <strong>{{getDeviceProperty('pxHeight','min')}}px à {{getDeviceProperty('pxHeight','max')}}px</strong>
+      </li>
+      <li>
+        La résolution d’écran <strong>la plus populaire</strong> ? 
+        <br />
+        <strong>{{mostCommonResolutionDevices.pxWidth}}px par {{mostCommonResolutionDevices.pxHeight}}px</strong> (partagée par 19 modèles d’appareils)
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<footer>
+  Cette maquette interactive a été créée par <a href="http://twitter.com/PearlChen">@PearlChen</a> pour le compte de TELUS.
+  <br />
+  On peut retrouver le code source sur <a href="https://github.com/pchen/telus-mobility-web-stats">Github</a>.
+</footer>
